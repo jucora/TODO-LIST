@@ -1,16 +1,28 @@
 import './css/style.css';
 
-const validation = (title, description, date, priority) =>{
-    if(title && description && date && priority){
+const projects = (() =>{
+    const current = [];
+    return{ current }
+})()
+
+const getLocalstorage = () => {
+    const currentProjects = JSON.parse(localStorage.getItem('myProjects'));
+    return currentProjects;
+  }
+
+const saveLocalstorage = (newProject) => {
+    projects.current.push(newProject)
+    localStorage.setItem('myProjects', JSON.stringify(projects));
+    getLocalstorage();
+  }
+
+const validation = (title, description) =>{
+    if(title && description){
         let newProject = {
             title: title,
-            description: description,
-            date: date,
-            priority: priority
+            description: description
         }
-        projects.push(newProject)
-        saveLocalstorage(projects)
-        addItem(newProject)
+        saveLocalstorage(newProject)
         return true;
     }
 }
@@ -60,9 +72,7 @@ const createTaskForm = () => {
    document.querySelector(".btnProject").addEventListener("click", function(){
     let title = document.querySelector("#title").value
     let description = document.querySelector("#description").value
-    let date = document.querySelector("#date").value
-    let priority = document.querySelector("#priority").value
-    validation(title,description,date,priority)
+    validation(title,description)
 })
 }
 
