@@ -1,5 +1,20 @@
 import './css/style.css';
 
+const validation = (title, description, date, priority) =>{
+    if(title && description && date && priority){
+        let newProject = {
+            title: title,
+            description: description,
+            date: date,
+            priority: priority
+        }
+        projects.push(newProject)
+        saveLocalstorage(projects)
+        addItem(newProject)
+        return true;
+    }
+}
+
 const createTaskForm = () => {
     let body = document.querySelector("body")
     body.innerHTML = "";
@@ -40,6 +55,15 @@ const createTaskForm = () => {
    
    div.appendChild(createButton);
    body.appendChild(div);
+
+    /* LISTENER */
+   document.querySelector(".btnProject").addEventListener("click", function(){
+    let title = document.querySelector("#title").value
+    let description = document.querySelector("#description").value
+    let date = document.querySelector("#date").value
+    let priority = document.querySelector("#priority").value
+    validation(title,description,date,priority)
+})
 }
 
 const home = () =>{
