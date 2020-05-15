@@ -1,5 +1,29 @@
 import './css/style.css';
 
+const getLocalstorage = () => {
+    const currentProjects = JSON.parse(localStorage.getItem('myProjects'));
+    return currentProjects;
+  }
+
+  const projects = (() =>{
+    const current = [];
+    return{ current }
+})()
+
+const renderProjects = () => {
+    getLocalstorage().forEach((project) => {
+        const item = document.createElement('li');
+        item.textContent = project.title;
+        document.querySelector("#projectsList").appendChild(item);
+    }) 
+}
+
+const renderNewProject = () =>{
+    const item = document.createElement('li');
+    item.textContent = projects.current[projects.current.length - 1].title;
+    document.querySelector("#projectsList").appendChild(item);
+}
+
 const home = () =>{
     /* ASIDE */
     let aside = document.createElement("aside");
@@ -12,7 +36,6 @@ const home = () =>{
     title.appendChild(img);
     let ul = document.createElement("ul");
     ul.setAttribute("id", "projectsList");
-    ul.innerHTML += "<li>Default</li>";
     aside.appendChild(title);
     aside.appendChild(ul);
     document.querySelector(".content").appendChild(aside);
@@ -28,45 +51,37 @@ const home = () =>{
     document.querySelector("#add-icon").addEventListener("click", createTaskForm);
 }
 
-const projects = (() =>{
-    const current = [];
-    return{ current }
-})()
+const removeWindow = () =>{
+    const projectWindow = document.querySelector(".new-box");
+    projectWindow.parentNode.removeChild(projectWindow);
+}
 
-const getLocalstorage = () => {
-    const currentProjects = JSON.parse(localStorage.getItem('myProjects'));
-    return currentProjects;
-  }
-  const createContentTag = () =>{
-      document.querySelector("body").innerHTML = "";
-      const content = document.createElement("div");
-      content.classList.add("content");
-      document.querySelector("body").appendChild(content);
+const saveLocalstorage = (currentProjects) => {
+    localStorage.setItem('myProjects', JSON.stringify(currentProjects));
+    renderNewProject()
+    removeWindow()
   }
 
-const saveLocalstorage = (newProject) => {
+  const project = (title, description) => {
+    return { title: title, description: description }
+  } 
+
+const createProject = (title, description) => {
+    const newProject = project(title, description)
     projects.current.push(newProject)
-    localStorage.setItem('myProjects', JSON.stringify(projects));
-    createContentTag()
-    home();
-  }
+    saveLocalstorage(projects.current)
+}  
 
 const validation = (title, description) =>{
-    if(title && description){
-        let newProject = {
-            title: title,
-            description: description
-        }
-        saveLocalstorage(newProject)
-        return true;
+    if(title && description){  
+        createProject(title, description);
     }
 }
 
 const createTaskForm = () => {
     let body = document.querySelector("body")
-    body.innerHTML = "";
-    body.style.background = "url(../src/images/bg2.jpeg) no-repeat";
-    body.style.backgroundSize = "cover"
+  
+    
     let div = document.createElement("div");
     div.classList.add("new-box");
     const h1 = document.createElement("h1");
@@ -110,6 +125,22 @@ const createTaskForm = () => {
     validation(title,description)
 })
 }
+
+const setDefault = () => {
+    if(getLocalstorage()){
+        getLocalstorage().forEach((el) => {
+            projects.current.push(el);
+        })
+    }
+    else{
+        const newProject = project("Default", "Al Projects")
+        projects.current.push(newProject)
+    }
+    
+    localStorage.setItem('myProjects', JSON.stringify(projects.current));
+    home();
+    renderProjects();
+}
 document.addEventListener(
-    'DOMContentLoaded', home()
+    'DOMContentLoaded', setDefault()
   );
