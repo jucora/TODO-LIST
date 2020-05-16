@@ -35,46 +35,68 @@ const projectDetail = (project) => {
     section.appendChild(projectDetail);
 }
 
-const deleteFromLocal = (index) => {
-    localStorage.removeItem(localStorage[index])
-}
-
 const renderProjects = () => {
+    document.querySelector("#projectsList").innerHTML = "";
     getLocalstorage().forEach((project, index) => {
         const item = document.createElement('li');
-        item.textContent = project.title;
+        const title = document.createElement("h2");
+        title.innerText = project.title
+        item.appendChild(title);
         const projectOptions = document.createElement("div");
-        const removeProject = document.createElement("li");
-        removeProject.classList.add('fas', 'fa-trash-alt');
-        removeProject.setAttribute("id", "removeProject")
+
+        const spanEdit = document.createElement("span");
+        spanEdit.setAttribute("id", "spanEdit");
         const editProject = document.createElement("li");
         editProject.classList.add('fas', 'fa-edit');
-        editProject.setAttribute("id", "editProject")
-        projectOptions.appendChild(editProject);
-        projectOptions.appendChild(removeProject);
-        projectOptions.innerHTML += "<hr><br>"
+        editProject.setAttribute("id", "editProject");
+        spanEdit.appendChild(editProject);
+        projectOptions.appendChild(spanEdit);
+
+        const spanRemove = document.createElement("span");
+        spanRemove.setAttribute("id", "spanRemove")
+        const removeProject = document.createElement("li");
+        removeProject.classList.add('fas', 'fa-trash-alt');
+        removeProject.setAttribute("id", "removeProject");
+        spanRemove.appendChild(removeProject);
+        projectOptions.appendChild(spanRemove);
+
+        projectOptions.innerHTML += "<br><br>"
+        const line = document.createElement("hr");
+        line.setAttribute("id", "line")
+        projectOptions.appendChild(line);
         item.appendChild(projectOptions);
         document.querySelector("#projectsList").appendChild(item);
         /*LISTENERS FOR EACH PROJECT*/
-        item.addEventListener("click", function detail(){
+        title.addEventListener("click", function detail(){
             projectDetail(project);
+        });
+        projectOptions.children[0].addEventListener("click", function(){
+            console.log("click on me")
         })
-        removeProject.addEventListener("click", () => {
-            item.parentNode.removeChild(item)
-            deleteFromLocal(index);
-;        })
+        projectOptions.children[1].addEventListener("click", function(){
+            item.parentNode.removeChild(item);
+            projects.current.splice(index,1);
+            saveLocalstorage(projects.current);
+        })
     }) 
 }
 
-const renderNewProject = () =>{
-    const newProject = projects.current[projects.current.length - 1];
-    const item = document.createElement('li');
-    item.textContent = newProject.title;
-    document.querySelector("#projectsList").appendChild(item);
-    /*NEW PROJECT LISTENER*/
-    item.addEventListener("click", function (){ 
-        projectDetail(newProject)
-    });
+const renderNewList = (status) =>{
+    if(status === "new"){
+        // const newProject = projects.current[projects.current.length - 1];
+        // const item = document.createElement('li');
+        // item.textContent = newProject.title;
+        // document.querySelector("#projectsList").appendChild(item);
+        /*NEW PROJECT LISTENER*/
+        // item.addEventListener("click", function (){ 
+        //     projectDetail(newProject)
+        // });
+        renderProjects();
+    }else{
+        renderProjects();
+    }
+    
+
 }
 
 const home = () =>{
@@ -105,13 +127,16 @@ const home = () =>{
 }
 
 const removeWindow = () =>{
-    const projectWindow = document.querySelector(".new-box");
-    projectWindow.parentNode.removeChild(projectWindow);
+    if(document.querySelector(".new-box")){
+        const projectWindow = document.querySelector(".new-box");
+        projectWindow.parentNode.removeChild(projectWindow);
+    }
 }
 
 const saveLocalstorage = (currentProjects) => {
     localStorage.setItem('myProjects', JSON.stringify(currentProjects));
-    renderNewProject()
+    // renderNewList(status);
+    renderProjects();
     removeWindow()
   }
 
@@ -133,8 +158,6 @@ const validation = (title, description) =>{
 
 const createTaskForm = () => {
     let body = document.querySelector("body")
-  
-    
     let div = document.createElement("div");
     div.classList.add("new-box");
     const h1 = document.createElement("h1");

@@ -28,7 +28,7 @@ aside{
     
     border-radius: 50px 0 0 50px;
     float: left;
-    height: 1000px;
+    height: auto;
     width: 25%;
 }
 
@@ -49,13 +49,20 @@ aside ul{
 }
 
 aside #editProject, #removeProject{
-  font-size:28px;
+  font-size:40px;
+  width: 50%;
 }
 aside #editProject:hover{
   color: green;
 }
 aside #removeProject:hover{
   color: red;
+}
+aside #line{
+  background: white;
+  height: 5px;
+  margin: auto;
+  width: 80%;
 }
 
 
