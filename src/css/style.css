@@ -47,9 +47,17 @@ aside ul{
     font-size: 18px;
     text-align: center;
 }
-aside ul:hover{
-    cursor: pointer;
+
+aside #editProject, #removeProject{
+  font-size:28px;
 }
+aside #editProject:hover{
+  color: green;
+}
+aside #removeProject:hover{
+  color: red;
+}
+
 
 /* SECTION */
 

@@ -1,5 +1,10 @@
 import './css/style.css';
 
+import '@fortawesome/fontawesome-free/js/fontawesome'
+import '@fortawesome/fontawesome-free/js/solid'
+import '@fortawesome/fontawesome-free/js/regular'
+import '@fortawesome/fontawesome-free/js/brands'
+
 const getLocalstorage = () => {
     const currentProjects = JSON.parse(localStorage.getItem('myProjects'));
     return currentProjects;
@@ -23,22 +28,41 @@ const projectDetail = (project) => {
     projectDetail.classList.add("projectDetail");
     const h1 = document.createElement("h1");
     h1.innerText = `${project.title}`;
-            projectDetail.appendChild(h1);
-            const p = document.createElement("p");
-            p.innerText = `${project.description}`;
-            projectDetail.appendChild(p);
-            section.appendChild(projectDetail);
+    projectDetail.appendChild(h1);
+    const p = document.createElement("p");
+    p.innerText = `${project.description}`;
+    projectDetail.appendChild(p);
+    section.appendChild(projectDetail);
+}
+
+const deleteFromLocal = (index) => {
+    localStorage.removeItem(localStorage[index])
 }
 
 const renderProjects = () => {
-    getLocalstorage().forEach((project) => {
+    getLocalstorage().forEach((project, index) => {
         const item = document.createElement('li');
         item.textContent = project.title;
+        const projectOptions = document.createElement("div");
+        const removeProject = document.createElement("li");
+        removeProject.classList.add('fas', 'fa-trash-alt');
+        removeProject.setAttribute("id", "removeProject")
+        const editProject = document.createElement("li");
+        editProject.classList.add('fas', 'fa-edit');
+        editProject.setAttribute("id", "editProject")
+        projectOptions.appendChild(editProject);
+        projectOptions.appendChild(removeProject);
+        projectOptions.innerHTML += "<hr><br>"
+        item.appendChild(projectOptions);
         document.querySelector("#projectsList").appendChild(item);
         /*LISTENERS FOR EACH PROJECT*/
         item.addEventListener("click", function detail(){
             projectDetail(project);
         })
+        removeProject.addEventListener("click", () => {
+            item.parentNode.removeChild(item)
+            deleteFromLocal(index);
+;        })
     }) 
 }
 
