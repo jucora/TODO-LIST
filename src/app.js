@@ -10,18 +10,47 @@ const getLocalstorage = () => {
     return{ current }
 })()
 
+const checkboxDetail = (section) => {
+    if(section.children[1]){
+        section.children[1].parentNode.removeChild(section.children[1]);
+    }
+}
+
+const projectDetail = (project) => {
+    let section = document.querySelector("section");
+    checkboxDetail(section);
+    const projectDetail = document.createElement("div");
+    projectDetail.classList.add("projectDetail");
+    const h1 = document.createElement("h1");
+    h1.innerText = `${project.title}`;
+            projectDetail.appendChild(h1);
+            const p = document.createElement("p");
+            p.innerText = `${project.description}`;
+            projectDetail.appendChild(p);
+            section.appendChild(projectDetail);
+}
+
 const renderProjects = () => {
     getLocalstorage().forEach((project) => {
         const item = document.createElement('li');
         item.textContent = project.title;
         document.querySelector("#projectsList").appendChild(item);
+        /*LISTENERS FOR EACH PROJECT*/
+        item.addEventListener("click", function detail(){
+            projectDetail(project);
+        })
     }) 
 }
 
 const renderNewProject = () =>{
+    const newProject = projects.current[projects.current.length - 1];
     const item = document.createElement('li');
-    item.textContent = projects.current[projects.current.length - 1].title;
+    item.textContent = newProject.title;
     document.querySelector("#projectsList").appendChild(item);
+    /*NEW PROJECT LISTENER*/
+    item.addEventListener("click", function (){ 
+        projectDetail(newProject)
+    });
 }
 
 const home = () =>{
