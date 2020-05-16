@@ -35,6 +35,115 @@ const projectDetail = (project) => {
     section.appendChild(projectDetail);
 }
 
+const removeWindow = () =>{
+    if(document.querySelector(".new-box")){
+        const projectWindow = document.querySelector(".new-box");
+        projectWindow.parentNode.removeChild(projectWindow);
+    }
+}
+
+const saveLocalstorage = (currentProjects) => {
+    localStorage.setItem('myProjects', JSON.stringify(currentProjects));
+    // renderNewList(status);
+    renderProjects();
+    removeWindow()
+  }
+
+  const project = (title, description) => {
+    return { title: title, description: description }
+  } 
+
+const createProject = (title, description) => {
+    const newProject = project(title, description)
+    projects.current.push(newProject)
+    saveLocalstorage(projects.current)
+}  
+
+const validation = (title, description) =>{
+    if(title && description){  
+        createProject(title, description);
+    }
+}
+
+const formButton = (buttonText) =>{
+    const button = document.createElement("input");
+    button.setAttribute("type","button");
+    button.classList.add("btnProject")
+    button.setAttribute("value",`${buttonText}`);
+    return button;
+}
+
+const descriptionField = (inputValue = "") =>{
+    const div3 = document.createElement("div");
+    div3.classList.add("textbox");
+    const i2 = document.createElement("i");
+    i2.classList.add("fas", "fa-edit");
+    const textarea = document.createElement("textarea");
+    textarea.setAttribute("placeholder", "Description"); 
+    textarea.setAttribute("id", "description");
+    textarea.innerText = inputValue;
+    div3.appendChild(textarea);
+    return div3;
+}
+
+
+const titleField = (inputValue = "") =>{
+    const div2 = document.createElement("div");
+    div2.classList.add("textbox");
+    const i = document.createElement("i");
+    i.classList.add("fas", "fa-tag");
+    div2.appendChild(i);
+    const input = document.createElement("input");
+    input.setAttribute("type", "text"); 
+    input.setAttribute("placeholder", "Title"); 
+    input.setAttribute("id", "title");
+    input.setAttribute("value", inputValue);
+    div2.appendChild(input);
+    return div2;
+}
+
+const formTitle = (title) => {
+    const h1 = document.createElement("h1");
+    h1.innerText = `${title}`;
+    return h1;
+}
+
+const form = (formType, project) => {
+    let body = document.querySelector("body")
+    let div = document.createElement("div");
+    div.classList.add("new-box");
+    switch(formType){
+        case "newProject":
+            div.appendChild(formTitle("New Project"));
+            div.appendChild(titleField());
+            div.appendChild(descriptionField());
+            div.appendChild(formButton("Create Project"));
+        break;
+        case "editProject":
+            div.appendChild(formTitle("Edit Project"));
+            div.appendChild(titleField(project.title));
+            div.appendChild(descriptionField(project.description));
+            div.appendChild(formButton("Save changes"));
+        break;
+        case "newTask":
+            div.appendChild(newProjectTitle("New Task"));
+        break;
+        case "editTask":
+            div.appendChild(newProjectTitle("Edit Task"));
+        break;
+        default: 
+        break;
+    }
+   body.appendChild(div);
+
+    /* LISTENER */
+   document.querySelector(".btnProject").addEventListener("click", function(){
+    let title = document.querySelector("#title").value
+    let description = document.querySelector("#description").value
+    validation(title,description)
+    })
+}
+
 const renderProjects = () => {
     document.querySelector("#projectsList").innerHTML = "";
     getLocalstorage().forEach((project, index) => {
@@ -71,7 +180,7 @@ const renderProjects = () => {
             projectDetail(project);
         });
         projectOptions.children[0].addEventListener("click", function(){
-            console.log("click on me")
+            form("editProject", project);
         })
         projectOptions.children[1].addEventListener("click", function(){
             item.parentNode.removeChild(item);
@@ -79,24 +188,6 @@ const renderProjects = () => {
             saveLocalstorage(projects.current);
         })
     }) 
-}
-
-const renderNewList = (status) =>{
-    if(status === "new"){
-        // const newProject = projects.current[projects.current.length - 1];
-        // const item = document.createElement('li');
-        // item.textContent = newProject.title;
-        // document.querySelector("#projectsList").appendChild(item);
-        /*NEW PROJECT LISTENER*/
-        // item.addEventListener("click", function (){ 
-        //     projectDetail(newProject)
-        // });
-        renderProjects();
-    }else{
-        renderProjects();
-    }
-    
-
 }
 
 const home = () =>{
@@ -123,83 +214,9 @@ const home = () =>{
     document.querySelector(".content").appendChild(section);
 
     /*LISTENERS*/
-    document.querySelector("#add-icon").addEventListener("click", createTaskForm);
-}
-
-const removeWindow = () =>{
-    if(document.querySelector(".new-box")){
-        const projectWindow = document.querySelector(".new-box");
-        projectWindow.parentNode.removeChild(projectWindow);
-    }
-}
-
-const saveLocalstorage = (currentProjects) => {
-    localStorage.setItem('myProjects', JSON.stringify(currentProjects));
-    // renderNewList(status);
-    renderProjects();
-    removeWindow()
-  }
-
-  const project = (title, description) => {
-    return { title: title, description: description }
-  } 
-
-const createProject = (title, description) => {
-    const newProject = project(title, description)
-    projects.current.push(newProject)
-    saveLocalstorage(projects.current)
-}  
-
-const validation = (title, description) =>{
-    if(title && description){  
-        createProject(title, description);
-    }
-}
-
-const createTaskForm = () => {
-    let body = document.querySelector("body")
-    let div = document.createElement("div");
-    div.classList.add("new-box");
-    const h1 = document.createElement("h1");
-    h1.innerText = "New Project";
-    div.appendChild(h1);
-    const div2 = document.createElement("div");
-    div2.classList.add("textbox");
-    const i = document.createElement("i");
-    i.classList.add("fas", "fa-tag");
-    div2.appendChild(i);
-    const input = document.createElement("input");
-    input.setAttribute("type", "text"); 
-    input.setAttribute("placeholder", "Title"); 
-    input.setAttribute("id", "title");
-    div2.appendChild(input);
-    div.appendChild(div2);
-
-    const div3 = document.createElement("div");
-    div3.classList.add("textbox");
-    const i2 = document.createElement("i");
-    i2.classList.add("fas", "fa-edit");
-    div3.appendChild(i);
-    const textarea = document.createElement("textarea");
-    textarea.setAttribute("placeholder", "Description"); 
-    textarea.setAttribute("id", "description");
-    div3.appendChild(textarea);
-    div.appendChild(div3);
-
-   const createButton = document.createElement("input");
-   createButton.setAttribute("type","button");
-   createButton.classList.add("btnProject")
-   createButton.setAttribute("value","Create Project");
-   
-   div.appendChild(createButton);
-   body.appendChild(div);
-
-    /* LISTENER */
-   document.querySelector(".btnProject").addEventListener("click", function(){
-    let title = document.querySelector("#title").value
-    let description = document.querySelector("#description").value
-    validation(title,description)
-})
+    document.querySelector("#add-icon").addEventListener("click", () => {
+         form("newProject")
+    });
 }
 
 const setDefault = () => {
