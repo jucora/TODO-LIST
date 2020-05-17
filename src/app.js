@@ -44,7 +44,6 @@ const removeWindow = () =>{
 
 const saveLocalstorage = (currentProjects) => {
     localStorage.setItem('myProjects', JSON.stringify(currentProjects));
-    // renderNewList(status);
     renderProjects();
     removeWindow()
   }
@@ -53,22 +52,35 @@ const saveLocalstorage = (currentProjects) => {
     return { title: title, description: description }
   } 
 
+const editProject = (title, description, index) => {
+    let editedProject = project(title, description);
+    projects.current[index] = editedProject;
+    saveLocalstorage(projects.current)
+    projectDetail(editedProject);
+}  
+
 const createProject = (title, description) => {
     const newProject = project(title, description)
     projects.current.push(newProject)
     saveLocalstorage(projects.current)
 }  
 
-const validation = (title, description) =>{
-    if(title && description){  
+const newProjectValidation = (title, description) =>{
+    if(title && description){ 
         createProject(title, description);
     }
 }
 
-const formButton = (buttonText) =>{
+const editProjectValidation = (title, description, index) =>{
+    if(title && description){  
+        editProject(title, description, index);
+    }
+}
+
+const formButton = (buttonText, buttonClass) =>{
     const button = document.createElement("input");
     button.setAttribute("type","button");
-    button.classList.add("btnProject")
+    button.classList.add(`${buttonClass}`)
     button.setAttribute("value",`${buttonText}`);
     return button;
 }
@@ -108,7 +120,7 @@ const formTitle = (title) => {
     return h1;
 }
 
-const form = (formType, project) => {
+const form = (formType, project, index) => {
     let body = document.querySelector("body")
     let div = document.createElement("div");
     div.classList.add("new-box");
@@ -117,13 +129,14 @@ const form = (formType, project) => {
             div.appendChild(formTitle("New Project"));
             div.appendChild(titleField());
             div.appendChild(descriptionField());
-            div.appendChild(formButton("Create Project"));
+            div.appendChild(formButton("Create Project", "newProjectButton"));
+            
         break;
         case "editProject":
             div.appendChild(formTitle("Edit Project"));
             div.appendChild(titleField(project.title));
             div.appendChild(descriptionField(project.description));
-            div.appendChild(formButton("Save changes"));
+            div.appendChild(formButton("Save changes", "editProjectButton"));
         break;
         case "newTask":
             div.appendChild(newProjectTitle("New Task"));
@@ -134,14 +147,23 @@ const form = (formType, project) => {
         default: 
         break;
     }
-   body.appendChild(div);
+   body.appendChild(div); 
 
-    /* LISTENER */
-   document.querySelector(".btnProject").addEventListener("click", function(){
-    let title = document.querySelector("#title").value
-    let description = document.querySelector("#description").value
-    validation(title,description)
-    })
+   /*LISTENERS*/
+   if(formType === "newProject"){
+        document.querySelector(".newProjectButton").addEventListener("click", function(){
+            let newProjectTitle = document.querySelector("#title").value
+            let newProjectDescription = document.querySelector("#description").value
+            newProjectValidation(newProjectTitle, newProjectDescription);
+        })
+    }
+    if(formType === "editProject"){
+        document.querySelector(".editProjectButton").addEventListener("click", function(){
+            let editProjectTitle = document.querySelector("#title").value
+            let editProjectDescription = document.querySelector("#description").value
+            editProjectValidation(editProjectTitle,editProjectDescription, index)
+        })   
+    }
 }
 
 const renderProjects = () => {
@@ -180,7 +202,7 @@ const renderProjects = () => {
             projectDetail(project);
         });
         projectOptions.children[0].addEventListener("click", function(){
-            form("editProject", project);
+            form("editProject", project, index);
         })
         projectOptions.children[1].addEventListener("click", function(){
             item.parentNode.removeChild(item);

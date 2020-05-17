@@ -138,7 +138,7 @@ section{
     float: left;
     margin: 0 10px;
   }
-  .btnProject{
+  .newProjectButton, .editProjectButton{
     width: 100%;
     background: none;
     border: 2px solid #4caf50;
