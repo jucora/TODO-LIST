@@ -81,7 +81,10 @@ const projectDetail = (project, index) => {
 }
 
 const removeAvoidInteractionBox = () => {
-    document.querySelector(".avoidInteractionBox").remove();
+    let avoidInteractionBox = document.querySelector(".avoidInteractionBox");
+    if(avoidInteractionBox){
+        avoidInteractionBox.remove();
+    }
 }
 
 const removeWindow = () =>{
@@ -235,6 +238,19 @@ const cancelButton = () =>{
     return cancelButton;
 }
 
+const newTaskValidation = (newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority) => {
+    if(newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority){
+        let today = new Date();
+        let selectedDay = new Date(newTaskDate);
+        if(selectedDay < today){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+}
+
 const form = (formType, project, index) => {
     let body = document.querySelector("body")
     let avoidInteractionBox = document.createElement("div");
@@ -298,7 +314,10 @@ const form = (formType, project, index) => {
             let newTaskDate = document.querySelector("#date").value;
             let newTaskHour = document.querySelector("#time").value;;
             let newTaskPriority = document.querySelector("#priority").value;
-            addNewTask(newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority, index);
+            if(newTaskValidation(newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority)){
+                addNewTask(newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority, index);
+                projectDetail(project, index);
+            }
         })
     }
 }
