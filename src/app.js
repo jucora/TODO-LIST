@@ -32,7 +32,16 @@ const projectDetail = (project) => {
     const p = document.createElement("p");
     p.innerText = `${project.description}`;
     projectDetail.appendChild(p);
+    const newTaskButton = document.createElement("button");
+    newTaskButton.innerText = "Add New Task";
+    projectDetail.appendChild(newTaskButton)
     section.appendChild(projectDetail);
+
+
+    /*newTaskButton Listener*/
+    newTaskButton.addEventListener("click", function() {
+        form("newTask");
+    })
 }
 
 const removeWindow = () =>{
@@ -83,6 +92,50 @@ const formButton = (buttonText, buttonClass) =>{
     button.classList.add(`${buttonClass}`)
     button.setAttribute("value",`${buttonText}`);
     return button;
+}
+
+const priorityField = () =>{
+    const div6 = document.createElement("div");
+    div6.classList.add("textbox");
+    const i = document.createElement("i");
+    i.classList.add("fas", "fa-calendar-week");
+    div6.appendChild(i);
+    const select = document.createElement("select");
+    const opt1 = document.createElement("option");
+    opt1.innerText = "Low";
+    select.appendChild(opt1);
+    const opt2 = document.createElement("option");
+    opt2.innerText = "Normal";
+    select.appendChild(opt2);
+    const opt3 = document.createElement("option");
+    opt3.innerText = "Hight";
+    select.appendChild(opt3);
+    div6.appendChild(select);
+    return div6;
+}
+
+const hourField = () =>{
+    const div5 = document.createElement("div");
+    div5.classList.add("textbox");
+    const i = document.createElement("i");
+    i.classList.add("far", "fa-clock");
+    div5.appendChild(i);
+    const input = document.createElement("input");
+    input.setAttribute("type", "time"); 
+    div5.appendChild(input);
+    return div5;
+}
+
+const dateField = () =>{
+    const div4 = document.createElement("div");
+    div4.classList.add("textbox");
+    const i = document.createElement("i");
+    i.classList.add("fas", "fa-calendar-week");
+    div4.appendChild(i);
+    const input = document.createElement("input");
+    input.setAttribute("type", "date"); 
+    div4.appendChild(input);
+    return div4;
 }
 
 const descriptionField = (inputValue = "") =>{
@@ -139,7 +192,13 @@ const form = (formType, project, index) => {
             div.appendChild(formButton("Save changes", "editProjectButton"));
         break;
         case "newTask":
-            div.appendChild(newProjectTitle("New Task"));
+            div.appendChild(formTitle("New Task"));
+            div.appendChild(titleField());
+            div.appendChild(descriptionField());
+            div.appendChild(dateField());
+            div.appendChild(hourField());
+            div.appendChild(priorityField());
+            div.appendChild(formButton("Add New Task", "taskButton"));
         break;
         case "editTask":
             div.appendChild(newProjectTitle("Edit Task"));
