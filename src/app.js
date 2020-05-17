@@ -15,15 +15,8 @@ const getLocalstorage = () => {
     return{ current }
 })()
 
-const checkboxDetail = (section) => {
-    if(section.children[1]){
-        section.children[1].parentNode.removeChild(section.children[1]);
-    }
-}
-
-const projectDetail = (project) => {
+const projectDetail = (project, index) => {
     let section = document.querySelector("section");
-    checkboxDetail(section);
     const projectDetail = document.createElement("div");
     projectDetail.classList.add("projectDetail");
     const h1 = document.createElement("h1");
@@ -37,10 +30,28 @@ const projectDetail = (project) => {
     projectDetail.appendChild(newTaskButton)
     section.appendChild(projectDetail);
 
+    /*Task Board*/
+    const taskBoard = document.createElement("div");
+    taskBoard.classList.add("taskBoard");
+    const taskBoardTitle = document.createElement("h2");
+    taskBoardTitle.innerText = "Tasks"
+    taskBoard.appendChild(taskBoardTitle);
+    const taskList = document.createElement("ul");
+    
+    projects.current[index].tasks.forEach(function(task){
+        const taskListItem = document.createElement("li");
+        taskListItem.innerText = `${task.taskTitle}`
+        taskList.appendChild(taskListItem);
+    })
+    taskBoard.appendChild(taskList);
+    section.appendChild(taskBoard); 
+
+    
+
 
     /*newTaskButton Listener*/
     newTaskButton.addEventListener("click", function() {
-        form("newTask");
+        form("newTask", "", index);
     })
 }
 
@@ -58,14 +69,14 @@ const saveLocalstorage = (currentProjects) => {
   }
 
   const project = (title, description) => {
-    return { title: title, description: description }
+    return { title: title, description: description, tasks:[] }
   } 
 
 const editProject = (title, description, index) => {
     let editedProject = project(title, description);
     projects.current[index] = editedProject;
     saveLocalstorage(projects.current)
-    projectDetail(editedProject);
+    projectDetail(editedProject, index);
 }  
 
 const createProject = (title, description) => {
@@ -101,6 +112,7 @@ const priorityField = () =>{
     i.classList.add("fas", "fa-calendar-week");
     div6.appendChild(i);
     const select = document.createElement("select");
+    select.setAttribute("id", "priority")
     const opt1 = document.createElement("option");
     opt1.innerText = "Low";
     select.appendChild(opt1);
@@ -121,7 +133,8 @@ const hourField = () =>{
     i.classList.add("far", "fa-clock");
     div5.appendChild(i);
     const input = document.createElement("input");
-    input.setAttribute("type", "time"); 
+    input.setAttribute("type", "time");
+    input.setAttribute("id", "time") 
     div5.appendChild(input);
     return div5;
 }
@@ -133,7 +146,8 @@ const dateField = () =>{
     i.classList.add("fas", "fa-calendar-week");
     div4.appendChild(i);
     const input = document.createElement("input");
-    input.setAttribute("type", "date"); 
+    input.setAttribute("type", "date");
+    input.setAttribute("id", "date"); 
     div4.appendChild(input);
     return div4;
 }
@@ -173,7 +187,13 @@ const formTitle = (title) => {
     return h1;
 }
 
+const addNewTask = (newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority, index) => {
+    projects.current[index].tasks.push({taskTitle: newTaskTitle, taskDescription: newTaskDescription, taskDate: newTaskDate, taskHour: newTaskHour, taskPriority: newTaskPriority});
+    saveLocalstorage(projects.current);
+}
+
 const form = (formType, project, index) => {
+    console.log(index)
     let body = document.querySelector("body")
     let div = document.createElement("div");
     div.classList.add("new-box");
@@ -223,6 +243,17 @@ const form = (formType, project, index) => {
             editProjectValidation(editProjectTitle,editProjectDescription, index)
         })   
     }
+
+    if (formType === "newTask"){
+        document.querySelector(".taskButton").addEventListener("click",function(){
+            let newTaskTitle = document.querySelector("#title").value
+            let newTaskDescription = document.querySelector("#description").value
+            let newTaskDate = document.querySelector("#date").value;
+            let newTaskHour = document.querySelector("#time").value;;
+            let newTaskPriority = document.querySelector("#priority").value;
+            addNewTask(newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, newTaskPriority, index);
+        })
+    }
 }
 
 const renderProjects = () => {
@@ -258,7 +289,7 @@ const renderProjects = () => {
         document.querySelector("#projectsList").appendChild(item);
         /*LISTENERS FOR EACH PROJECT*/
         title.addEventListener("click", function detail(){
-            projectDetail(project);
+            projectDetail(project, index);
         });
         projectOptions.children[0].addEventListener("click", function(){
             form("editProject", project, index);
