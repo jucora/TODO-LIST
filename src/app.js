@@ -217,6 +217,19 @@ const addNewTask = (newTaskTitle, newTaskDescription, newTaskDate, newTaskHour, 
     saveLocalstorage(projects.current);
 }
 
+const cancelButton = () =>{
+    const cancelButton = document.createElement("input");
+    cancelButton.setAttribute("type","button");
+    cancelButton.classList.add("cancelButton")
+    cancelButton.setAttribute("value","Cancel");
+    
+    /* CANCEL BUTTON LISTENER*/
+    cancelButton.addEventListener("click", function(){
+      removeWindow();  
+    })
+    return cancelButton;
+}
+
 const form = (formType, project, index) => {
     console.log(index)
     let body = document.querySelector("body")
@@ -251,7 +264,8 @@ const form = (formType, project, index) => {
         default: 
         break;
     }
-   body.appendChild(div); 
+    div.appendChild(cancelButton());
+    body.appendChild(div); 
 
    /*LISTENERS*/
    if(formType === "newProject"){
