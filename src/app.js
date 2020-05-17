@@ -41,13 +41,16 @@ const projectDetail = (project, index) => {
     projects.current[index].tasks.forEach(function(task){
         const taskListItem = document.createElement("li");
         taskListItem.innerText = `${task.taskTitle}`
+        const editTask = document.createElement("li");
+        editTask.classList.add('fas', 'fa-edit')
+        taskListItem.appendChild(editTask);
+        const removeTask = document.createElement("li");
+        removeTask.classList.add('fas', 'fa-trash-alt')
+        taskListItem.appendChild(removeTask);
         taskList.appendChild(taskListItem);
     })
     taskBoard.appendChild(taskList);
     section.appendChild(taskBoard); 
-
-    
-
 
     /*newTaskButton Listener*/
     newTaskButton.addEventListener("click", function() {
