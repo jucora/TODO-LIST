@@ -80,11 +80,16 @@ const projectDetail = (project, index) => {
     })
 }
 
+const removeAvoidInteractionBox = () => {
+    document.querySelector(".avoidInteractionBox").remove();
+}
+
 const removeWindow = () =>{
     if(document.querySelector(".new-box")){
         const projectWindow = document.querySelector(".new-box");
         projectWindow.parentNode.removeChild(projectWindow);
     }
+    removeAvoidInteractionBox();
 }
 
 const saveLocalstorage = (currentProjects) => {
@@ -231,8 +236,10 @@ const cancelButton = () =>{
 }
 
 const form = (formType, project, index) => {
-    console.log(index)
     let body = document.querySelector("body")
+    let avoidInteractionBox = document.createElement("div");
+    avoidInteractionBox.classList.add("avoidInteractionBox");
+
     let div = document.createElement("div");
     div.classList.add("new-box");
     switch(formType){
@@ -265,6 +272,7 @@ const form = (formType, project, index) => {
         break;
     }
     div.appendChild(cancelButton());
+    body.appendChild(avoidInteractionBox);
     body.appendChild(div); 
 
    /*LISTENERS*/

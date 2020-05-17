@@ -94,6 +94,16 @@ section{
 
 /* NEW PROJECT FORM PAGE */
 
+.avoidInteractionBox{
+  background: orange;
+  height: 100vh;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+}
+
 .new-box{
     transition: background .5s ease-out, box-shadow 1s ease-out;
     background: #02a8a8;/**/
@@ -108,6 +118,7 @@ section{
     -webkit-box-shadow: 25px 25px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 25px 25px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 25px 25px 5px 0px rgba(0,0,0,0.75);
+  z-index: 10;
     
   }
   .new-box:hover{/**/
