@@ -15,7 +15,19 @@ const getLocalstorage = () => {
     return{ current }
 })()
 
+const removeBoards = () =>{
+    let projectDetail = document.querySelector(".projectDetail");
+    let taskBoard = document.querySelector(".taskBoard");
+    if(projectDetail){
+        projectDetail.remove();
+    }
+    if(taskBoard){
+        taskBoard.remove();
+    }
+}
+
 const projectDetail = (project, index) => {
+    removeBoards();
     let section = document.querySelector("section");
     const projectDetail = document.createElement("div");
     projectDetail.classList.add("projectDetail");
@@ -38,16 +50,26 @@ const projectDetail = (project, index) => {
     taskBoard.appendChild(taskBoardTitle);
     const taskList = document.createElement("ul");
     
-    projects.current[index].tasks.forEach(function(task){
+    projects.current[index].tasks.forEach(function(task, taskIndex){
         const taskListItem = document.createElement("li");
         taskListItem.innerText = `${task.taskTitle}`
         const editTask = document.createElement("li");
         editTask.classList.add('fas', 'fa-edit')
         taskListItem.appendChild(editTask);
+        const removeTaskContainer = document.createElement("span"); 
         const removeTask = document.createElement("li");
         removeTask.classList.add('fas', 'fa-trash-alt')
-        taskListItem.appendChild(removeTask);
+        removeTaskContainer.appendChild(removeTask)
+        taskListItem.appendChild(removeTaskContainer);
         taskList.appendChild(taskListItem);
+        
+        /*TASK LISTENERS*/
+        taskListItem.children[1].addEventListener("click", () => {
+            taskListItem.parentNode.removeChild(taskListItem);
+            projects.current[index].tasks.splice(taskIndex,1);
+            
+            saveLocalstorage(projects.current);
+        })
     })
     taskBoard.appendChild(taskList);
     section.appendChild(taskBoard); 
