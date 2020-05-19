@@ -5,7 +5,7 @@ import "@fortawesome/fontawesome-free/js/solid";
 import "@fortawesome/fontawesome-free/js/regular";
 import "@fortawesome/fontawesome-free/js/brands";
 
-import { format, getHours, getMinutes } from "date-fns";
+import { getHours, getMinutes } from "date-fns";
 
 const getLocalstorage = () => {
   const currentProjects = JSON.parse(localStorage.getItem("myProjects"));
@@ -40,6 +40,7 @@ const projectDetail = (project, index) => {
   p.innerText = `${project.description}`;
   projectDetail.appendChild(p);
   const newTaskButton = document.createElement("button");
+  newTaskButton.classList.add("newTaskButton");
   newTaskButton.innerText = "Add New Task";
   projectDetail.appendChild(newTaskButton);
   section.appendChild(projectDetail);
@@ -55,17 +56,24 @@ const projectDetail = (project, index) => {
   projects.current[index].tasks.forEach(function (task, taskIndex) {
     const taskListItem = document.createElement("li");
     taskListItem.innerText = `${task.taskTitle}`;
+    const editTaskContainer = document.createElement("span");
     const editTask = document.createElement("li");
+    editTask.setAttribute("id", "editTask");
     editTask.classList.add("fas", "fa-edit");
-    taskListItem.appendChild(editTask);
+    editTaskContainer.appendChild(editTask);
+    taskListItem.appendChild(editTaskContainer);
     const removeTaskContainer = document.createElement("span");
     const removeTask = document.createElement("li");
+    removeTask.setAttribute("id", "removeTask");
     removeTask.classList.add("fas", "fa-trash-alt");
     removeTaskContainer.appendChild(removeTask);
     taskListItem.appendChild(removeTaskContainer);
     taskList.appendChild(taskListItem);
 
     /*TASK LISTENERS*/
+    taskListItem.children[0].addEventListener("click", () => {
+      form("editTask", project, index, task, taskIndex);
+    });
     taskListItem.children[1].addEventListener("click", () => {
       taskListItem.parentNode.removeChild(taskListItem);
       projects.current[index].tasks.splice(taskIndex, 1);
@@ -140,7 +148,26 @@ const formButton = (buttonText, buttonClass) => {
   return button;
 };
 
-const priorityField = () => {
+const showTaskPriority = (taskPriority, opt1, opt2, opt3) => {
+  if (taskPriority) {
+    console.log(taskPriority);
+    switch (taskPriority) {
+      case "Low":
+        opt1.setAttribute("selected", true);
+        break;
+      case "Normal":
+        opt2.setAttribute("selected", true);
+        break;
+      case "Hight":
+        opt3.setAttribute("selected", true);
+        break;
+      default:
+        break;
+    }
+  }
+};
+
+const priorityField = (taskPriority) => {
   const div6 = document.createElement("div");
   div6.classList.add("textbox");
   const i = document.createElement("i");
@@ -157,11 +184,12 @@ const priorityField = () => {
   const opt3 = document.createElement("option");
   opt3.innerText = "Hight";
   select.appendChild(opt3);
+  showTaskPriority(taskPriority, opt1, opt2, opt3);
   div6.appendChild(select);
   return div6;
 };
 
-const hourField = () => {
+const hourField = (taskHour) => {
   const div5 = document.createElement("div");
   div5.classList.add("textbox");
   const i = document.createElement("i");
@@ -169,12 +197,15 @@ const hourField = () => {
   div5.appendChild(i);
   const input = document.createElement("input");
   input.setAttribute("type", "time");
+  if (taskHour) {
+    input.setAttribute("value", taskHour);
+  }
   input.setAttribute("id", "time");
   div5.appendChild(input);
   return div5;
 };
 
-const dateField = () => {
+const dateField = (taskDate) => {
   const div4 = document.createElement("div");
   div4.classList.add("textbox");
   const i = document.createElement("i");
@@ -182,6 +213,9 @@ const dateField = () => {
   div4.appendChild(i);
   const input = document.createElement("input");
   input.setAttribute("type", "date");
+  if (taskDate) {
+    input.setAttribute("value", taskDate);
+  }
   input.setAttribute("id", "date");
   div4.appendChild(input);
   return div4;
@@ -252,51 +286,43 @@ const cancelButton = () => {
   return cancelButton;
 };
 
-const newTaskValidation = (
-  newTaskTitle,
-  newTaskDescription,
-  newTaskDate,
-  newTaskHour,
-  newTaskPriority
+const taskValidation = (
+  taskTitle,
+  taskDescription,
+  taskDate,
+  taskHour,
+  taskPriority
 ) => {
-  if (
-    newTaskTitle &&
-    newTaskDescription &&
-    newTaskDate &&
-    newTaskHour &&
-    newTaskPriority
-  ) {
-    let today = format(new Date(), "dd/MM/yyyy");
-    let selectedDay = format(
-      new Date(newTaskDate.replace(/-/g, "/")),
-      "dd/MM/yyyy"
-    );
-    if (selectedDay >= today) {
-      if (selectedDay === today) {
+  if (taskTitle && taskDescription && taskDate && taskHour && taskPriority) {
+    let today = new Date();
+    let selectedDay = new Date(taskDate.replace(/-/g, "/"));
+    console.log(today, selectedDay, selectedDay.getDate() >= today.getDate());
+    if (selectedDay.getDate() >= today.getDate()) {
+      if (selectedDay.getDate() === today.getDate()) {
         console.log("same day");
-        let onlyTaskHour = parseInt(newTaskHour.split(":")[0]);
-        let onlyTaskMinutes = parseInt(newTaskHour.split(":")[1]);
+        let onlyTaskHour = parseInt(taskHour.split(":")[0]);
+        let onlyTaskMinutes = parseInt(taskHour.split(":")[1]);
         if (onlyTaskHour > getHours(new Date())) {
-          //console.log("mismo dia horas despues");
+          console.log("mismo dia horas despues");
           return true;
         } else if (onlyTaskHour === getHours(new Date())) {
-          //console.log("mismo dia misma hora");
+          console.log("mismo dia misma hora");
           if (onlyTaskMinutes > getMinutes(new Date())) {
-            //console.log("misma hora mayores minutos");
+            console.log("misma hora mayores minutos");
             return true;
           } else if (onlyTaskMinutes === getMinutes(new Date())) {
-            //console.log("Los minutos no pueden ser iguales");
+            console.log("Los minutos no pueden ser iguales");
             return false;
           } else {
-            //console.log("minutos deben ser mayores a los actuales");
+            console.log("minutos deben ser mayores a los actuales");
             return false;
           }
         } else {
-          //console.log("la hora no puede ser menor");
+          console.log("la hora no puede ser menor");
           return false;
         }
       } else {
-        //console.log("crear tarea");
+        console.log("crear tarea");
         return true;
       }
     } else {
@@ -305,7 +331,26 @@ const newTaskValidation = (
   }
 };
 
-const form = (formType, project, index) => {
+const editTask = (
+  editTaskTitle,
+  editTaskDescription,
+  editTaskDate,
+  editTaskHour,
+  editTaskPriority,
+  index,
+  taskIndex
+) => {
+  projects.current[index].tasks[taskIndex] = {
+    taskTitle: editTaskTitle,
+    taskDescription: editTaskDescription,
+    taskDate: editTaskDate,
+    taskHour: editTaskHour,
+    taskPriority: editTaskPriority,
+  };
+  saveLocalstorage(projects.current);
+};
+
+const form = (formType, project, index, task, taskIndex) => {
   let body = document.querySelector("body");
   let avoidInteractionBox = document.createElement("div");
   avoidInteractionBox.classList.add("avoidInteractionBox");
@@ -336,7 +381,14 @@ const form = (formType, project, index) => {
       div.appendChild(formButton("Add New Task", "taskButton"));
       break;
     case "editTask":
-      div.appendChild(newProjectTitle("Edit Task"));
+      div.appendChild(formTitle("Edit Task"));
+      console.log("task title", task.taskTitle);
+      div.appendChild(titleField(task.taskTitle));
+      div.appendChild(descriptionField(task.taskDescription));
+      div.appendChild(dateField(task.taskDate));
+      div.appendChild(hourField(task.taskHour));
+      div.appendChild(priorityField(task.taskPriority));
+      div.appendChild(formButton("Save changes", "editTaskButton"));
       break;
     default:
       break;
@@ -376,7 +428,7 @@ const form = (formType, project, index) => {
         let newTaskHour = document.querySelector("#time").value;
         let newTaskPriority = document.querySelector("#priority").value;
         if (
-          newTaskValidation(
+          taskValidation(
             newTaskTitle,
             newTaskDescription,
             newTaskDate,
@@ -396,6 +448,37 @@ const form = (formType, project, index) => {
         }
       });
   }
+  if (formType === "editTask") {
+    document
+      .querySelector(".editTaskButton")
+      .addEventListener("click", function () {
+        let editTaskTitle = document.querySelector("#title").value;
+        let editTaskDescription = document.querySelector("#description").value;
+        let editTaskDate = document.querySelector("#date").value;
+        let editTaskHour = document.querySelector("#time").value;
+        let editTaskPriority = document.querySelector("#priority").value;
+        if (
+          taskValidation(
+            editTaskTitle,
+            editTaskDescription,
+            editTaskDate,
+            editTaskHour,
+            editTaskPriority
+          )
+        ) {
+          editTask(
+            editTaskTitle,
+            editTaskDescription,
+            editTaskDate,
+            editTaskHour,
+            editTaskPriority,
+            index,
+            taskIndex
+          );
+          projectDetail(project, index);
+        }
+      });
+  }
 };
 
 const renderProjects = () => {
@@ -403,6 +486,7 @@ const renderProjects = () => {
   getLocalstorage().forEach((project, index) => {
     const item = document.createElement("li");
     const title = document.createElement("h2");
+    title.setAttribute("id", "projectTitle");
     title.innerText = project.title;
     item.appendChild(title);
     const projectOptions = document.createElement("div");
@@ -447,16 +531,22 @@ const renderProjects = () => {
 const home = () => {
   /* ASIDE */
   let aside = document.createElement("aside");
+  const sideTitleIcon = document.createElement("div");
+  sideTitleIcon.setAttribute("id", "side-title-icon");
   let title = document.createElement("h2");
+  title.setAttribute("id", "aside-main-title");
   title.innerText = "Projects";
-  let img = document.createElement("img");
-  img.setAttribute("src", "../src/images/add.svg");
-  img.setAttribute("alt", "add-icon");
-  img.setAttribute("id", "add-icon");
-  title.appendChild(img);
+  sideTitleIcon.appendChild(title);
+  let addIconContainer = document.createElement("span");
+  addIconContainer.setAttribute("id", "add-icon-container");
+  let li = document.createElement("li");
+  li.setAttribute("id", "add-icon");
+  li.classList.add("fas", "fa-plus-circle");
+  addIconContainer.appendChild(li);
+  sideTitleIcon.appendChild(addIconContainer);
+  aside.appendChild(sideTitleIcon);
   let ul = document.createElement("ul");
   ul.setAttribute("id", "projectsList");
-  aside.appendChild(title);
   aside.appendChild(ul);
   document.querySelector(".content").appendChild(aside);
 
@@ -468,9 +558,11 @@ const home = () => {
   document.querySelector(".content").appendChild(section);
 
   /*LISTENERS*/
-  document.querySelector("#add-icon").addEventListener("click", () => {
-    form("newProject");
-  });
+  document
+    .querySelector("#add-icon-container")
+    .addEventListener("click", () => {
+      form("newProject");
+    });
 };
 
 const setDefault = () => {
