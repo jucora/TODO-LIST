@@ -34,7 +34,7 @@ const projectDetail = (project, index) => {
   const projectDetail = document.createElement("div");
   projectDetail.classList.add("projectDetail");
   const h1 = document.createElement("h1");
-  h1.innerText = `${project.title}`;
+  h1.innerText = `Project Name: ${project.title}`;
   projectDetail.appendChild(h1);
   const p = document.createElement("p");
   p.innerText = `${project.description}`;
@@ -55,7 +55,24 @@ const projectDetail = (project, index) => {
 
   projects.current[index].tasks.forEach(function (task, taskIndex) {
     const taskListItem = document.createElement("li");
-    taskListItem.innerText = `${task.taskTitle}`;
+    taskListItem.setAttribute("id", "taskListItem");
+    const taskTitle = document.createElement("h2");
+    taskTitle.setAttribute("id", "taskTitle");
+    taskTitle.innerText = `${task.taskTitle}`;
+    const taskDescription = document.createElement("p");
+    taskDescription.innerText = `Description: ${task.taskDescription}`;
+    const taskDate = document.createElement("p");
+    taskDate.innerText = `Date: ${task.taskDate}`;
+    const taskHour = document.createElement("p");
+    taskHour.innerText = `Hour: ${task.taskHour}`;
+    const taskPriority = document.createElement("p");
+    taskPriority.innerText = `Priority: ${task.taskPriority}`;
+    taskListItem.appendChild(taskTitle);
+    taskListItem.appendChild(taskDescription);
+    taskListItem.appendChild(taskDate);
+    taskListItem.appendChild(taskHour);
+    taskListItem.appendChild(taskPriority);
+
     const editTaskContainer = document.createElement("span");
     const editTask = document.createElement("li");
     editTask.setAttribute("id", "editTask");
@@ -71,10 +88,10 @@ const projectDetail = (project, index) => {
     taskList.appendChild(taskListItem);
 
     /*TASK LISTENERS*/
-    taskListItem.children[0].addEventListener("click", () => {
+    taskListItem.children[5].addEventListener("click", () => {
       form("editTask", project, index, task, taskIndex);
     });
-    taskListItem.children[1].addEventListener("click", () => {
+    taskListItem.children[6].addEventListener("click", () => {
       taskListItem.parentNode.removeChild(taskListItem);
       projects.current[index].tasks.splice(taskIndex, 1);
 
@@ -86,7 +103,7 @@ const projectDetail = (project, index) => {
 
   /*newTaskButton Listener*/
   newTaskButton.addEventListener("click", function () {
-    form("newTask", "", index);
+    form("newTask", project, index);
   });
 };
 
@@ -444,6 +461,7 @@ const form = (formType, project, index, task, taskIndex) => {
             newTaskPriority,
             index
           );
+          console.log(project);
           projectDetail(project, index);
         }
       });

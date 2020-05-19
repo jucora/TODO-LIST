@@ -12,9 +12,10 @@ body {
 
 .content {
   border: 3px solid white;
-  border-radius: 50px 0 0 50px;
-  height: 1000px;
+  border-radius: 50px;
   margin: 0 auto;
+  overflow: hidden;
+  padding-bottom: 20px;
   width: 80%;
 }
 
@@ -23,7 +24,7 @@ body {
 
 aside {
   background: #6a00c3;
-  border-radius: 50px 0 0 0;
+  border-radius: 50px;
   float: left;
   height: auto;
   width: 25%;
@@ -113,7 +114,7 @@ section {
   border: 1px solid white;
   border-radius: 50px;
   color: white;
-  height: 150px;
+  height: auto;
   margin: auto;
   padding: 30px;
   text-align: center;
@@ -136,7 +137,7 @@ section {
   border: 1px solid white;
   border-radius: 50px;
   color: white;
-  height: 300px;
+  height: auto;
   margin: auto;
   margin-top: 20px;
   padding: 30px;
@@ -144,15 +145,30 @@ section {
   width: 80%;
 }
 
-#editTask {
-  color: rgb(0, 255, 0);
+#taskTitle {
+  text-decoration: underline;
+}
+
+#taskListItem {
+  background: gray;
+  margin-bottom: 10px;
+  padding: 30px;
+}
+
+#editTask,
+#removeTask {
   cursor: pointer;
   font-size: 35px;
+  margin-top: 20px;
+}
+
+#editTask {
+  color: rgb(0, 255, 0);
+  margin-right: 15px;
 }
 #removeTask {
   color: red;
-  cursor: pointer;
-  font-size: 35px;
+  margin-left: 15px;
 }
 
 /* NEW PROJECT FORM PAGE */
@@ -167,7 +183,7 @@ section {
 
 .new-box {
   transition: background 0.5s ease-out, box-shadow 1s ease-out;
-  background: #d80214; /**/
+  background: #253826; /**/
   border: 1px solid #4caf50; /**/
   width: 50%;
   padding: 50px /**/;
@@ -233,4 +249,74 @@ select {
   margin: 12px 0;
 }
 
-/*colors 018383   02a8a8   42e6a4    f5dea3*/
+/***************RESPONSIVE******************/
+
+/*LARGE (lg) from 1200px */
+
+@media (min-width: 1200px) {
+  .content {
+    width: 90%;
+  }
+}
+
+/*MEDIUM (md) from 992px */
+
+@media (max-width: 1199px) and (min-width: 992px) {
+  .content {
+    width: 90%;
+  }
+  aside {
+    width: 30%;
+  }
+  section {
+    width: 70%;
+  }
+  .newTaskButton {
+    width: 35%;
+  }
+}
+
+/*SMALL(sm) from 768px*/
+
+@media (max-width: 991px) and (min-width: 768px) {
+  .content {
+    width: 90%;
+  }
+  aside {
+    width: 35%;
+  }
+  section {
+    width: 65%;
+  }
+  .newTaskButton {
+    width: 45%;
+  }
+}
+/*EXTRA SMALL(xs)*/
+
+@media (max-width: 767px) {
+  .content {
+    width: 90%;
+  }
+  aside {
+    width: 100%;
+  }
+  .projectDetail {
+    margin-left: 3px;
+    width: 130%;
+  }
+  .newTaskButton {
+    width: 70%;
+  }
+
+  .taskBoard {
+    margin-left: 3px;
+    width: 130%;
+  }
+  .newTaskButton {
+    width: 70%;
+  }
+  .new-box {
+    width: 80%;
+  }
+}
