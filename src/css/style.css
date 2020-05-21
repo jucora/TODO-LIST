@@ -249,6 +249,14 @@ select {
   margin: 12px 0;
 }
 
+#message {
+  color: red;
+  display: none;
+  font-size: 18px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 /***************RESPONSIVE******************/
 
 /*LARGE (lg) from 1200px */

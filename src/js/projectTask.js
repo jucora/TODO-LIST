@@ -16,6 +16,15 @@ const projects = (() => {
   return { current };
 })();
 
+const formMessage = (messageText) => {
+  const message = document.createElement('p');
+  message.setAttribute('id', 'message');
+  const formBox = document.querySelector('.new-box');
+  message.innerText = `${messageText}`;
+  message.style.display = 'block';
+  formBox.insertBefore(message, document.querySelector('.taskButton'));
+};
+
 const taskValidation = (
   taskTitle,
   taskDescription,
@@ -38,19 +47,17 @@ const taskValidation = (
             return true;
           }
           if (onlyTaskMinutes === getMinutes(new Date())) {
+            formMessage("The task can't be in the current time!");
             return false;
           }
-
-          return false;
         }
-
-        return false;
       }
-
       return true;
     }
+    formMessage('You cannot select past dates!');
     return false;
   }
+  formMessage('All fields are required!');
   return false;
 };
 const editTask = (
