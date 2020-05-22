@@ -1,7 +1,7 @@
 <h1 align="center">:page_with_curl: TODO LIST PROJECT</h1>
 
 <p align="center">
-  <img src="src/images/restaurant.png">
+  <img src="src/images/cover.png">
 </p>
 
 ## :pencil: Description
