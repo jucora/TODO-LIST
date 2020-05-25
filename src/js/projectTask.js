@@ -363,12 +363,7 @@ const projectDetail = (project, index) => {
   newTaskButtonListener(newTaskButton, index);
 };
 
-const createProjectItem = (project) => {
-  const item = document.createElement("li");
-  const title = document.createElement("h2");
-  title.setAttribute("id", "projectTitle");
-  title.innerText = `${project.title}`;
-  item.appendChild(title);
+const createProjectItemOptions = () => {
   const projectOptions = document.createElement("div");
   const spanEdit = document.createElement("span");
   spanEdit.setAttribute("id", "spanEdit");
@@ -388,8 +383,14 @@ const createProjectItem = (project) => {
   const line = document.createElement("hr");
   line.setAttribute("id", "line");
   projectOptions.appendChild(line);
-  item.appendChild(projectOptions);
-  return [title, projectOptions, item];
+  return projectOptions;
+};
+
+const createProjectItemTitle = (project) => {
+  const title = document.createElement("h2");
+  title.setAttribute("id", "projectTitle");
+  title.innerText = `${project.title}`;
+  return title;
 };
 
 const renderEditedProject = (index, title) => {
@@ -440,17 +441,9 @@ const editProjectForm = (project) => {
   body.appendChild(div);
 };
 
-const addEditRemoveProjectListeners = (
-  title,
-  project,
-  index,
-  projectOptions,
-  item
-) => {
+const editRemoveProjectListeners = (index, projectOptions, item) => {
   /* LISTENERS FOR EACH PROJECT */
-  title.addEventListener("click", () => {
-    projectDetail(project, index);
-  });
+
   projectOptions.children[0].addEventListener("click", () => {
     editProjectForm(projects.current[index]);
     editProjectFormListener(index);
@@ -463,15 +456,27 @@ const addEditRemoveProjectListeners = (
   });
 };
 
+const titleProjectListener = (project, index, title) => {
+  title.addEventListener("click", () => {
+    projectDetail(project, index);
+  });
+};
+
 const renderProjects = () => {
   document.querySelector("#projectsList").innerHTML = "";
   getLocalstorage().forEach((project, index) => {
-    const getTitleItemProjectOptions = createProjectItem(project);
-    const title = getTitleItemProjectOptions[0];
-    const projectOptions = getTitleItemProjectOptions[1];
-    const item = getTitleItemProjectOptions[2];
+    const title = createProjectItemTitle(project);
+    const projectOptions = createProjectItemOptions();
+    const item = document.createElement("li");
+    item.appendChild(title);
     document.querySelector("#projectsList").appendChild(item);
-    addEditRemoveProjectListeners(title, project, index, projectOptions, item);
+    if (index !== 0) {
+      item.appendChild(projectOptions);
+      titleProjectListener(project, index, title);
+      editRemoveProjectListeners(index, projectOptions, item);
+    } else {
+      titleProjectListener(project, index, title);
+    }
   });
 };
 
