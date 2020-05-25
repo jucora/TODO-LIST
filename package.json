@@ -33,6 +33,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "eslint-import-resolver-webpack": "^0.12.1",
     "date-fns": "^2.13.0",
     "@fortawesome/fontawesome-free": "^5.13.0"
   }
