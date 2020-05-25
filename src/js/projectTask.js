@@ -391,7 +391,7 @@ const createProjectItemTitle = (project) => {
   return title;
 };
 
-const renderEditedProject = (index, title) => {
+const updateListItemTitle = (index, title) => {
   const projectToEdit = document.querySelector("#projectsList").children[index];
   projectToEdit.querySelector("#projectTitle").innerText = `${title}`;
 };
@@ -399,12 +399,12 @@ const renderEditedProject = (index, title) => {
 const project = (title, description) => ({ title, description, tasks: [] });
 
 const editProject = (title, description, index) => {
-  const editedProject = project(title, description);
-  projects.current[index] = editedProject;
+  projects.current[index].title = title;
+  projects.current[index].description = description;
   storage.save(projects.current);
   remove.window();
-  projectDetail(editedProject, index);
-  renderEditedProject(index, title);
+  projectDetail(projects.current[index], index);
+  updateListItemTitle(index, title);
 };
 
 const editProjectValidation = (title, description, index) => {
@@ -439,6 +439,19 @@ const editProjectForm = (project) => {
   body.appendChild(div);
 };
 
+const removeProjectFromStorage = (index) => {
+  if (index) {
+    projects.current.splice(index, 1);
+    storage.save(projects.current);
+  }
+};
+
+const removeListItem = (item) => {
+  if (item) {
+    item.parentNode.removeChild(item);
+  }
+};
+
 const editRemoveProjectListeners = (index, projectOptions, item) => {
   /* LISTENERS FOR EACH PROJECT */
 
@@ -447,16 +460,15 @@ const editRemoveProjectListeners = (index, projectOptions, item) => {
     editProjectFormListener(index);
   });
   projectOptions.children[1].addEventListener("click", () => {
-    item.parentNode.removeChild(item);
-    projects.current.splice(index, 1);
-    storage.save(projects.current);
+    removeListItem(item);
+    removeProjectFromStorage(index);
     remove.boards();
   });
 };
 
-const titleProjectListener = (project, index, title) => {
+const titleProjectListener = (index, title) => {
   title.addEventListener("click", () => {
-    projectDetail(project, index);
+    projectDetail(projects.current[index], index);
   });
 };
 
@@ -470,20 +482,36 @@ const renderProjects = () => {
     document.querySelector("#projectsList").appendChild(item);
     if (index !== 0) {
       item.appendChild(projectOptions);
-      titleProjectListener(project, index, title);
+      titleProjectListener(index, title);
       editRemoveProjectListeners(index, projectOptions, item);
     } else {
-      titleProjectListener(project, index, title);
+      titleProjectListener(index, title);
     }
   });
 };
+//AQUI VAMOS EN LA REVISION
+const renderNewProject = (title, description) => {
+  const index = projects.current[projects.current.length - 1];
+  if (title && description) {
+    const title = createProjectItemTitle(projects.current[index]);
+    const projectOptions = createProjectItemOptions();
+    const item = document.createElement("li");
+    item.appendChild(title);
+    document.querySelector("#projectsList").appendChild(item);
+    item.appendChild(projectOptions);
+    titleProjectListener(index, title);
+    editRemoveProjectListeners(index, projectOptions, item);
+  }
+};
 
 const createProject = (title, description) => {
-  const newProject = project(title, description);
-  projects.current.push(newProject);
-  storage.save(projects.current);
-  remove.window();
-  renderProjects();
+  if (title && description) {
+    const newProject = project(title, description);
+    projects.current.push(newProject);
+    storage.save(projects.current);
+    remove.window();
+    renderNewProject(title, description);
+  }
 };
 
 const newProjectValidation = (title, description) => {
