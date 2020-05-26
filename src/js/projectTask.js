@@ -1,7 +1,7 @@
-import { getHours, getMinutes } from "date-fns";
-import storage from "./storage";
-import remove from "./closeRemove";
-import form from "./form";
+import { getHours, getMinutes } from 'date-fns';
+import storage from './storage';
+import remove from './closeRemove';
+import form from './form';
 
 const projects = (() => {
   const current = [];
@@ -15,24 +15,24 @@ const createTaskitem = (
   editTaskDescription,
   editTaskDate,
   editTaskHour,
-  editTaskPriority
+  editTaskPriority,
 ) => {
-  const taskListItem = document.createElement("li");
-  taskListItem.setAttribute("id", "taskListItem");
-  const taskTitle = document.createElement("h2");
-  taskTitle.setAttribute("id", "taskTitle");
+  const taskListItem = document.createElement('li');
+  taskListItem.setAttribute('id', 'taskListItem');
+  const taskTitle = document.createElement('h2');
+  taskTitle.setAttribute('id', 'taskTitle');
   taskTitle.innerText = `${editTaskTitle}`;
-  const taskDescription = document.createElement("p");
-  taskDescription.setAttribute("id", "taskDescription");
+  const taskDescription = document.createElement('p');
+  taskDescription.setAttribute('id', 'taskDescription');
   taskDescription.innerText = `Description: ${editTaskDescription}`;
-  const taskDate = document.createElement("p");
-  taskDate.setAttribute("id", "taskDate");
+  const taskDate = document.createElement('p');
+  taskDate.setAttribute('id', 'taskDate');
   taskDate.innerText = `Date: ${editTaskDate}`;
-  const taskHour = document.createElement("p");
-  taskHour.setAttribute("id", "taskHour");
+  const taskHour = document.createElement('p');
+  taskHour.setAttribute('id', 'taskHour');
   taskHour.innerText = `Hour: ${editTaskHour}`;
-  const taskPriority = document.createElement("p");
-  taskPriority.setAttribute("id", "taskPriority");
+  const taskPriority = document.createElement('p');
+  taskPriority.setAttribute('id', 'taskPriority');
   taskPriority.innerText = `Priority: ${editTaskPriority}`;
   taskListItem.appendChild(taskTitle);
   taskListItem.appendChild(taskDescription);
@@ -40,43 +40,43 @@ const createTaskitem = (
   taskListItem.appendChild(taskHour);
   taskListItem.appendChild(taskPriority);
 
-  const editTaskContainer = document.createElement("span");
-  const editTask = document.createElement("li");
-  editTask.setAttribute("id", "editTask");
-  editTask.classList.add("fas", "fa-edit");
+  const editTaskContainer = document.createElement('span');
+  const editTask = document.createElement('li');
+  editTask.setAttribute('id', 'editTask');
+  editTask.classList.add('fas', 'fa-edit');
   editTaskContainer.appendChild(editTask);
   taskListItem.appendChild(editTaskContainer);
-  const removeTaskContainer = document.createElement("span");
-  const removeTask = document.createElement("li");
-  removeTask.setAttribute("id", "removeTask");
-  removeTask.classList.add("fas", "fa-trash-alt");
+  const removeTaskContainer = document.createElement('span');
+  const removeTask = document.createElement('li');
+  removeTask.setAttribute('id', 'removeTask');
+  removeTask.classList.add('fas', 'fa-trash-alt');
   removeTaskContainer.appendChild(removeTask);
   taskListItem.appendChild(removeTaskContainer);
   return taskListItem;
 };
 
-/* Method to update the task displayed in the taskList 
+/* Method to update the task displayed in the taskList
 once a task has been created or edited  */
 
 const updateProjectsDetail = (taskListItem, taskIndex) => {
-  const taskList = document.querySelector("#taskList");
+  const taskList = document.querySelector('#taskList');
   if (taskIndex !== undefined) {
     const actualTask = taskList.children[taskIndex];
 
     actualTask.querySelector(
-      "#taskTitle"
+      '#taskTitle',
     ).innerText = `${taskListItem.children[0].textContent}`;
     actualTask.querySelector(
-      "#taskDescription"
+      '#taskDescription',
     ).innerText = `${taskListItem.children[1].textContent}`;
     actualTask.querySelector(
-      "#taskDate"
+      '#taskDate',
     ).innerText = `${taskListItem.children[2].textContent}`;
     actualTask.querySelector(
-      "#taskHour"
+      '#taskHour',
     ).innerText = `${taskListItem.children[3].textContent}`;
     actualTask.querySelector(
-      "#taskPriority"
+      '#taskPriority',
     ).innerText = `${taskListItem.children[4].textContent}`;
   } else {
     taskList.appendChild(taskListItem);
@@ -92,7 +92,7 @@ const editTask = (
   editTaskHour,
   editTaskPriority,
   index,
-  taskIndex
+  taskIndex,
 ) => {
   projects.current[index].tasks[taskIndex] = {
     taskTitle: editTaskTitle,
@@ -111,15 +111,15 @@ const taskValidation = (
   taskDescription,
   taskDate,
   taskHour,
-  taskPriority
+  taskPriority,
 ) => {
   if (taskTitle && taskDescription && taskDate && taskHour && taskPriority) {
     const today = new Date();
-    const selectedDay = new Date(taskDate.replace(/-/g, "/"));
+    const selectedDay = new Date(taskDate.replace(/-/g, '/'));
     if (selectedDay.getDate() >= today.getDate()) {
       if (selectedDay.getDate() === today.getDate()) {
-        const onlyTaskHour = parseInt(taskHour.split(":")[0], 10);
-        const onlyTaskMinutes = parseInt(taskHour.split(":")[1], 10);
+        const onlyTaskHour = parseInt(taskHour.split(':')[0], 10);
+        const onlyTaskMinutes = parseInt(taskHour.split(':')[1], 10);
         if (onlyTaskHour > getHours(new Date())) {
           return true;
         }
@@ -135,10 +135,10 @@ const taskValidation = (
       }
       return true;
     }
-    form.errorMessage("You cannot select past dates!");
+    form.errorMessage('You cannot select past dates!');
     return false;
   }
-  form.errorMessage("All fields are required!");
+  form.errorMessage('All fields are required!');
   return false;
 };
 
@@ -154,7 +154,7 @@ const editTaskController = (
   editTaskHour,
   editTaskPriority,
   index,
-  taskIndex
+  taskIndex,
 ) => {
   if (
     taskValidation(
@@ -162,7 +162,7 @@ const editTaskController = (
       editTaskDescription,
       editTaskDate,
       editTaskHour,
-      editTaskPriority
+      editTaskPriority,
     )
   ) {
     editTask(
@@ -172,30 +172,30 @@ const editTaskController = (
       editTaskHour,
       editTaskPriority,
       index,
-      taskIndex
+      taskIndex,
     );
     const taskListItem = createTaskitem(
       editTaskTitle,
       editTaskDescription,
       editTaskDate,
       editTaskHour,
-      editTaskPriority
+      editTaskPriority,
     );
     updateProjectsDetail(taskListItem, taskIndex);
     remove.window();
   }
 };
 
-/* Method to add listener to the edit task option, this listener calls the 
+/* Method to add listener to the edit task option, this listener calls the
 editTaskControllerin irder to start all edition process for a task */
 
 const editTaskFormListeners = (index, taskIndex) => {
-  document.querySelector(".editTaskButton").addEventListener("click", () => {
-    const editTaskTitle = document.querySelector("#title").value;
-    const editTaskDescription = document.querySelector("#description").value;
-    const editTaskDate = document.querySelector("#date").value;
-    const editTaskHour = document.querySelector("#time").value;
-    const editTaskPriority = document.querySelector("#priority").value;
+  document.querySelector('.editTaskButton').addEventListener('click', () => {
+    const editTaskTitle = document.querySelector('#title').value;
+    const editTaskDescription = document.querySelector('#description').value;
+    const editTaskDate = document.querySelector('#date').value;
+    const editTaskHour = document.querySelector('#time').value;
+    const editTaskPriority = document.querySelector('#priority').value;
     editTaskController(
       editTaskTitle,
       editTaskDescription,
@@ -203,19 +203,19 @@ const editTaskFormListeners = (index, taskIndex) => {
       editTaskHour,
       editTaskPriority,
       index,
-      taskIndex
+      taskIndex,
     );
   });
 };
 
-/* Method to create an invisible window, this window avoid user to interact with 
-  the application when a form is being displayed, if the user closes the form or 
+/* Method to create an invisible window, this window avoid user to interact with
+  the application when a form is being displayed, if the user closes the form or
   submit info through the form, this window is removed */
 
 const avoidInteractionBox = () => {
-  const body = document.querySelector("body");
-  const avoidInteractionBox = document.createElement("div");
-  avoidInteractionBox.classList.add("avoidInteractionBox");
+  const body = document.querySelector('body');
+  const avoidInteractionBox = document.createElement('div');
+  avoidInteractionBox.classList.add('avoidInteractionBox');
   body.appendChild(avoidInteractionBox);
 };
 
@@ -223,14 +223,14 @@ const avoidInteractionBox = () => {
   and ready to be used */
 
 const placeForm = (div) => {
-  const body = document.querySelector("body");
+  const body = document.querySelector('body');
   body.appendChild(div);
 };
 
-/* Method to create the task form structure, the methods newTaskForm and editTaskForm 
- call this method, if there is a task provided means that the call is from editTaskForm method 
+/* Method to create the task form structure, the methods newTaskForm and editTaskForm
+ call this method, if there is a task provided means that the call is from editTaskForm method
  and that a task already exists so the form will be for edition, if the task is not provided
- means that the call is from newTaskForm method, and the form will be to create a new task. 
+ means that the call is from newTaskForm method, and the form will be to create a new task.
  This method is multi task: for create and edit task forms */
 
 const taskFormStructure = (
@@ -242,7 +242,7 @@ const taskFormStructure = (
   taskDate,
   taskHour,
   taskPriority,
-  currentTask
+  currentTask,
 ) => {
   const div = form.formBox();
   avoidInteractionBox();
@@ -268,15 +268,15 @@ const taskFormStructure = (
 // Method to set previous values before create the edit task form
 
 const editTaskForm = (index, taskIndex) => {
-  const title = "Edit Task";
+  const title = 'Edit Task';
   const currentTask = projects.current[index].tasks[taskIndex];
-  const taskTitle = currentTask.taskTitle;
-  const taskDescription = currentTask.taskDescription;
-  const taskDate = currentTask.taskDate;
-  const taskHour = currentTask.taskHour;
-  const taskPriority = currentTask.taskPriority;
-  const buttonText = "Save changes";
-  const buttonClass = "editTaskButton";
+  const { taskTitle } = currentTask;
+  const { taskDescription } = currentTask;
+  const { taskDate } = currentTask;
+  const { taskHour } = currentTask;
+  const { taskPriority } = currentTask;
+  const buttonText = 'Save changes';
+  const buttonClass = 'editTaskButton';
   taskFormStructure(
     title,
     buttonText,
@@ -286,14 +286,14 @@ const editTaskForm = (index, taskIndex) => {
     taskDate,
     taskHour,
     taskPriority,
-    currentTask
+    currentTask,
   );
 };
 
 // Method to add a listener to call an edition form to be able to edit a task
 
 const editTaskListener = (taskListItem, index, taskIndex) => {
-  taskListItem.children[5].addEventListener("click", () => {
+  taskListItem.children[5].addEventListener('click', () => {
     editTaskForm(index, taskIndex);
     editTaskFormListeners(index, taskIndex);
   });
@@ -302,7 +302,7 @@ const editTaskListener = (taskListItem, index, taskIndex) => {
 // Method to add a listener to delete a task form local storage
 
 const removeTaskListener = (taskListItem, index, taskIndex) => {
-  taskListItem.children[6].addEventListener("click", () => {
+  taskListItem.children[6].addEventListener('click', () => {
     taskListItem.parentNode.removeChild(taskListItem);
     projects.current[index].tasks.splice(taskIndex, 1);
     storage.save(projects.current);
@@ -317,7 +317,7 @@ const addNewTask = (
   newTaskDate,
   newTaskHour,
   newTaskPriority,
-  index
+  index,
 ) => {
   projects.current[index].tasks.push({
     taskTitle: newTaskTitle,
@@ -333,7 +333,7 @@ const addNewTask = (
 once the validation is correct, it calls the method to add a new task to the local storage,
 then it calls the method to create a new task item for the list to be added to the taskList,
 then it calls the method to update the project detail view to display the new task, then,
-it calls the method to add listeners (edit and remove) to the new task added and finally it 
+it calls the method to add listeners (edit and remove) to the new task added and finally it
 removes the form window
 */
 
@@ -343,7 +343,7 @@ const newTaskController = (
   newTaskDate,
   newTaskHour,
   newTaskPriority,
-  index
+  index,
 ) => {
   if (
     taskValidation(
@@ -351,7 +351,7 @@ const newTaskController = (
       newTaskDescription,
       newTaskDate,
       newTaskHour,
-      newTaskPriority
+      newTaskPriority,
     )
   ) {
     addNewTask(
@@ -360,19 +360,19 @@ const newTaskController = (
       newTaskDate,
       newTaskHour,
       newTaskPriority,
-      index
+      index,
     );
     const taskListItem = createTaskitem(
       newTaskTitle,
       newTaskDescription,
       newTaskDate,
       newTaskHour,
-      newTaskPriority
+      newTaskPriority,
     );
     updateProjectsDetail(taskListItem);
 
     const taskIndex = Array.from(taskListItem.parentNode.children).indexOf(
-      taskListItem
+      taskListItem,
     );
     editTaskListener(taskListItem, index, taskIndex);
     removeTaskListener(taskListItem, index, taskIndex);
@@ -384,19 +384,19 @@ const newTaskController = (
  of the inputs to the newTaskController */
 
 const newTaskFormListeners = (index) => {
-  document.querySelector(".addTaskButton").addEventListener("click", () => {
-    const newTaskTitle = document.querySelector("#title").value;
-    const newTaskDescription = document.querySelector("#description").value;
-    const newTaskDate = document.querySelector("#date").value;
-    const newTaskHour = document.querySelector("#time").value;
-    const newTaskPriority = document.querySelector("#priority").value;
+  document.querySelector('.addTaskButton').addEventListener('click', () => {
+    const newTaskTitle = document.querySelector('#title').value;
+    const newTaskDescription = document.querySelector('#description').value;
+    const newTaskDate = document.querySelector('#date').value;
+    const newTaskHour = document.querySelector('#time').value;
+    const newTaskPriority = document.querySelector('#priority').value;
     newTaskController(
       newTaskTitle,
       newTaskDescription,
       newTaskDate,
       newTaskHour,
       newTaskPriority,
-      index
+      index,
     );
   });
 };
@@ -404,9 +404,9 @@ const newTaskFormListeners = (index) => {
 // Method to set previous values before create the new task form
 
 const newTaskForm = (index) => {
-  const title = "New Task";
-  const buttonText = "Add new task";
-  const buttonClass = "addTaskButton";
+  const title = 'New Task';
+  const buttonText = 'Add new task';
+  const buttonClass = 'addTaskButton';
   taskFormStructure(title, buttonText, buttonClass);
   newTaskFormListeners(index);
 };
@@ -414,7 +414,7 @@ const newTaskForm = (index) => {
 // Method to add listener to the new task button
 
 const newTaskButtonListener = (newTaskButton, index) => {
-  newTaskButton.addEventListener("click", () => {
+  newTaskButton.addEventListener('click', () => {
     newTaskForm(index);
   });
 };
@@ -423,29 +423,29 @@ const newTaskButtonListener = (newTaskButton, index) => {
 
 const projectDetail = (project, index) => {
   remove.boards();
-  const section = document.querySelector("section");
-  const projectDetail = document.createElement("div");
-  projectDetail.classList.add("projectDetail");
-  const h1 = document.createElement("h1");
+  const section = document.querySelector('section');
+  const projectDetail = document.createElement('div');
+  projectDetail.classList.add('projectDetail');
+  const h1 = document.createElement('h1');
   h1.innerText = `Project Name: ${project.title}`;
   projectDetail.appendChild(h1);
-  const p = document.createElement("p");
+  const p = document.createElement('p');
   p.innerText = `${project.description}`;
   projectDetail.appendChild(p);
-  const newTaskButton = document.createElement("button");
-  newTaskButton.classList.add("newTaskButton");
-  newTaskButton.innerText = "Add New Task";
+  const newTaskButton = document.createElement('button');
+  newTaskButton.classList.add('newTaskButton');
+  newTaskButton.innerText = 'Add New Task';
   projectDetail.appendChild(newTaskButton);
   section.appendChild(projectDetail);
 
   /* Task Board */
-  const taskBoard = document.createElement("div");
-  taskBoard.classList.add("taskBoard");
-  const taskBoardTitle = document.createElement("h2");
-  taskBoardTitle.innerText = "Tasks";
+  const taskBoard = document.createElement('div');
+  taskBoard.classList.add('taskBoard');
+  const taskBoardTitle = document.createElement('h2');
+  taskBoardTitle.innerText = 'Tasks';
   taskBoard.appendChild(taskBoardTitle);
-  const taskList = document.createElement("ul");
-  taskList.setAttribute("id", "taskList");
+  const taskList = document.createElement('ul');
+  taskList.setAttribute('id', 'taskList');
 
   projects.current[index].tasks.forEach((task, taskIndex) => {
     const taskListItem = createTaskitem(
@@ -453,7 +453,7 @@ const projectDetail = (project, index) => {
       task.taskDescription,
       task.taskDate,
       task.taskHour,
-      task.taskPriority
+      task.taskPriority,
     );
     taskList.appendChild(taskListItem);
     editTaskListener(taskListItem, index, taskIndex);
@@ -467,11 +467,11 @@ const projectDetail = (project, index) => {
 // Method to create the remove icon to allow user delete a project
 
 const removeProjectOption = () => {
-  const spanRemove = document.createElement("span");
-  spanRemove.setAttribute("id", "spanRemove");
-  const removeProject = document.createElement("li");
-  removeProject.classList.add("fas", "fa-trash-alt");
-  removeProject.setAttribute("id", "removeProject");
+  const spanRemove = document.createElement('span');
+  spanRemove.setAttribute('id', 'spanRemove');
+  const removeProject = document.createElement('li');
+  removeProject.classList.add('fas', 'fa-trash-alt');
+  removeProject.setAttribute('id', 'removeProject');
   spanRemove.appendChild(removeProject);
   return spanRemove;
 };
@@ -479,36 +479,36 @@ const removeProjectOption = () => {
 // Method to create the edit icon to allow user edit a project
 
 const editProjectOption = () => {
-  const spanEdit = document.createElement("span");
-  spanEdit.setAttribute("id", "spanEdit");
-  const editProject = document.createElement("li");
-  editProject.classList.add("fas", "fa-edit");
-  editProject.setAttribute("id", "editProject");
+  const spanEdit = document.createElement('span');
+  spanEdit.setAttribute('id', 'spanEdit');
+  const editProject = document.createElement('li');
+  editProject.classList.add('fas', 'fa-edit');
+  editProject.setAttribute('id', 'editProject');
   spanEdit.appendChild(editProject);
   return spanEdit;
 };
 
-/* Method called by renderProjects and renderNewProject methods, 
-it creates the div tag which will contain the project options 
+/* Method called by renderProjects and renderNewProject methods,
+it creates the div tag which will contain the project options
 EDIT and REMOVE */
 
 const createProjectItemOptions = () => {
-  const projectOptions = document.createElement("div");
+  const projectOptions = document.createElement('div');
   projectOptions.appendChild(editProjectOption());
   projectOptions.appendChild(removeProjectOption());
-  projectOptions.innerHTML += "<br><br>";
-  const line = document.createElement("hr");
-  line.setAttribute("id", "line");
+  projectOptions.innerHTML += '<br><br>';
+  const line = document.createElement('hr');
+  line.setAttribute('id', 'line');
   projectOptions.appendChild(line);
   return projectOptions;
 };
 
-/* Method called by renderProjects and renderNewProject methods, 
+/* Method called by renderProjects and renderNewProject methods,
 it creates the tag which will contain the project title */
 
 const createProjectItemTitle = (project) => {
-  const title = document.createElement("h2");
-  title.setAttribute("id", "projectTitle");
+  const title = document.createElement('h2');
+  title.setAttribute('id', 'projectTitle');
   title.innerText = `${project.title}`;
   return title;
 };
@@ -516,8 +516,8 @@ const createProjectItemTitle = (project) => {
 // This method update the title displayed in projectsList (ul tag), once the project is edited
 
 const updateListItemTitle = (index, title) => {
-  const projectToEdit = document.querySelector("#projectsList").children[index];
-  projectToEdit.querySelector("#projectTitle").innerText = `${title}`;
+  const projectToEdit = document.querySelector('#projectsList').children[index];
+  projectToEdit.querySelector('#projectTitle').innerText = `${title}`;
 };
 
 /* Method to control the project edition process once the validation is approved */
@@ -531,32 +531,32 @@ const editProject = (title, description, index) => {
   updateListItemTitle(index, title);
 };
 
-/* Method to validate data before approve a project edition, 
+/* Method to validate data before approve a project edition,
 title and description must be provided in order to set an edition as valid */
 
 const editProjectValidation = (title, description, index) => {
   if (title && description) {
     editProject(title, description, index);
   } else {
-    form.errorMessage("All fields are required!");
+    form.errorMessage('All fields are required!');
   }
 };
 
-/* Method to add listeners when user press SAVE CHANGES button, it will call 
+/* Method to add listeners when user press SAVE CHANGES button, it will call
 a validation method before setting the new values into the project */
 
 const editProjectFormListener = (index) => {
-  document.querySelector(".editProjectButton").addEventListener("click", () => {
-    const editProjectTitle = document.querySelector("#title").value;
-    const editProjectDescription = document.querySelector("#description").value;
+  document.querySelector('.editProjectButton').addEventListener('click', () => {
+    const editProjectTitle = document.querySelector('#title').value;
+    const editProjectDescription = document.querySelector('#description').value;
     editProjectValidation(editProjectTitle, editProjectDescription, index);
   });
 };
 
-/* Method to create the project form structure, the methods newProjectForm and editProjectForm 
- call this method, if there is a project provided means that the call is from editFormProject method 
+/* Method to create the project form structure, the methods newProjectForm and editProjectForm
+ call this method, if there is a project provided means that the call is from editFormProject method
  and that a project already exists so the form will be for edition, if the project is not provided
- means that the call is from newProjectForm method, and the form will be to create a new project. 
+ means that the call is from newProjectForm method, and the form will be to create a new project.
  This method is multi task: for create and edit project forms */
 
 const projectFormStructure = (title, buttonText, buttonClass, project) => {
@@ -578,9 +578,9 @@ const projectFormStructure = (title, buttonText, buttonClass, project) => {
 // Method to set previous values before create the edit project form
 
 const editProjectForm = (project) => {
-  const title = "Edit Project";
-  const buttonText = "Save Changes";
-  const buttonClass = "editProjectButton";
+  const title = 'Edit Project';
+  const buttonText = 'Save Changes';
+  const buttonClass = 'editProjectButton';
   projectFormStructure(title, buttonText, buttonClass, project);
 };
 
@@ -604,35 +604,36 @@ const removeListItem = (item) => {
 // Method to control the remove project process
 
 const removeProjectListener = (index, projectOptions, item) => {
-  projectOptions.children[1].addEventListener("click", () => {
+  projectOptions.children[1].addEventListener('click', () => {
     removeListItem(item);
     removeProjectFromStorage(index);
-    renderProjects();
+    window.location.reload();
     remove.boards();
   });
 };
 
-/* Method to add listener to the edit icon, in order to be able 
+/* Method to add listener to the edit icon, in order to be able
 to create an edition form with its listeners */
 
 const editProjectListener = (projectOptions, index) => {
-  projectOptions.children[0].addEventListener("click", () => {
+  projectOptions.children[0].addEventListener('click', () => {
     editProjectForm(projects.current[index]);
     editProjectFormListener(index);
   });
 };
 
-/* Method to add listener to each project title to call the projectDetail method 
+/* Method to add listener to each project title to call the projectDetail method
 to display details about that project */
 
 const titleProjectListener = (index, title) => {
-  title.addEventListener("click", () => {
+  title.addEventListener('click', () => {
     projectDetail(projects.current[index], index);
   });
 };
 
-/* Method called by renderProjects method below, to assign listeners to the projects, 
-the Default project (index 0) will have only the title listener, users can not delete Default project*/
+/* Method called by renderProjects method below, to assign listeners to the projects,
+the Default project (index 0) will have only the title listener, users can not delete
+Default project */
 
 const projectListenerControl = (index, item, title, projectOptions) => {
   if (index !== 0) {
@@ -645,33 +646,33 @@ const projectListenerControl = (index, item, title, projectOptions) => {
   }
 };
 
-/* Method to render all projects in the projectsList(ul tag). 
+/* Method to render all projects in the projectsList(ul tag).
 This method calls the projectListenerControl method above */
 
 const renderProjects = () => {
-  document.querySelector("#projectsList").innerHTML = "";
+  document.querySelector('#projectsList').innerHTML = '';
   storage.get().forEach((project, index) => {
     const title = createProjectItemTitle(project);
     const projectOptions = createProjectItemOptions();
-    const item = document.createElement("li");
+    const item = document.createElement('li');
     item.appendChild(title);
-    document.querySelector("#projectsList").appendChild(item);
+    document.querySelector('#projectsList').appendChild(item);
     projectListenerControl(index, item, title, projectOptions);
   });
 };
 
-//Method to render new project in the projectsList (ul tag)
+// Method to render new project in the projectsList (ul tag)
 
 const renderNewProject = () => {
   const index = projects.current.indexOf(
-    projects.current[projects.current.length - 1]
+    projects.current[projects.current.length - 1],
   );
   const title = createProjectItemTitle(projects.current[index]);
   const projectOptions = createProjectItemOptions();
-  const item = document.createElement("li");
+  const item = document.createElement('li');
   item.appendChild(title);
   item.appendChild(projectOptions);
-  document.querySelector("#projectsList").appendChild(item);
+  document.querySelector('#projectsList').appendChild(item);
   titleProjectListener(index, title);
   editProjectListener(projectOptions, index);
   removeProjectListener(index, projectOptions, item);
@@ -699,30 +700,32 @@ const newProjectValidation = (title, description) => {
     remove.window();
     renderNewProject();
   } else {
-    form.errorMessage("All fields are require!");
+    form.errorMessage('All fields are require!');
   }
 };
 
-/* This method is called by newProjectForm method below. 
+/* This method is called by newProjectForm method below.
 This method adds listeners to the new project form */
 
 const newProjectFormListeners = () => {
-  document.querySelector(".newProjectButton").addEventListener("click", () => {
-    const newProjectTitle = document.querySelector("#title").value;
-    const newProjectDescription = document.querySelector("#description").value;
+  document.querySelector('.newProjectButton').addEventListener('click', () => {
+    const newProjectTitle = document.querySelector('#title').value;
+    const newProjectDescription = document.querySelector('#description').value;
     newProjectValidation(newProjectTitle, newProjectDescription);
   });
 };
 
-/* Method to set previous values before create the new project form, 
+/* Method to set previous values before create the new project form,
 this method is called by addProjectListener method inside app.js */
 
 const newProjectForm = () => {
-  const title = "New Project";
-  const buttonText = "Create Project";
-  const buttonClass = "newProjectButton";
+  const title = 'New Project';
+  const buttonText = 'Create Project';
+  const buttonClass = 'newProjectButton';
   projectFormStructure(title, buttonText, buttonClass);
   newProjectFormListeners();
 };
 
-export { projects, project, newProjectForm, renderProjects };
+export {
+  projects, project, newProjectForm, renderProjects,
+};
