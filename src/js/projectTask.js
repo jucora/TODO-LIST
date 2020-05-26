@@ -8,34 +8,7 @@ const projects = (() => {
   return { current };
 })();
 
-const formMessage = (messageText) => {
-  const message = document.createElement("p");
-  message.setAttribute("id", "message");
-  const formBox = document.querySelector(".new-box");
-  message.innerText = `${messageText}`;
-  message.style.display = "block";
-  formBox.insertBefore(message, document.querySelector(".taskButton"));
-};
-
-const editTask = (
-  editTaskTitle,
-  editTaskDescription,
-  editTaskDate,
-  editTaskHour,
-  editTaskPriority,
-  index,
-  taskIndex
-) => {
-  projects.current[index].tasks[taskIndex] = {
-    taskTitle: editTaskTitle,
-    taskDescription: editTaskDescription,
-    taskDate: editTaskDate,
-    taskHour: editTaskHour,
-    taskPriority: editTaskPriority,
-  };
-  storage.save(projects.current);
-  remove.window();
-};
+/* Method to create a task item to be added to the list(li tag) */
 
 const createTaskitem = (
   editTaskTitle,
@@ -82,6 +55,9 @@ const createTaskitem = (
   return taskListItem;
 };
 
+/* Method to update the task displayed in the taskList 
+once a task has been created or edited  */
+
 const updateProjectsDetail = (taskListItem, taskIndex) => {
   const taskList = document.querySelector("#taskList");
   if (taskIndex !== undefined) {
@@ -107,6 +83,29 @@ const updateProjectsDetail = (taskListItem, taskIndex) => {
   }
 };
 
+// Method add the edited task to the local storage
+
+const editTask = (
+  editTaskTitle,
+  editTaskDescription,
+  editTaskDate,
+  editTaskHour,
+  editTaskPriority,
+  index,
+  taskIndex
+) => {
+  projects.current[index].tasks[taskIndex] = {
+    taskTitle: editTaskTitle,
+    taskDescription: editTaskDescription,
+    taskDate: editTaskDate,
+    taskHour: editTaskHour,
+    taskPriority: editTaskPriority,
+  };
+  storage.save(projects.current);
+};
+
+/* Method to validates task int the process for create and edit task */
+
 const taskValidation = (
   taskTitle,
   taskDescription,
@@ -129,19 +128,66 @@ const taskValidation = (
             return true;
           }
           if (onlyTaskMinutes === getMinutes(new Date())) {
-            formMessage("The task can't be in the current time!");
+            form.errorMessage("The task can't be in the current time!");
             return false;
           }
         }
       }
       return true;
     }
-    formMessage("You cannot select past dates!");
+    form.errorMessage("You cannot select past dates!");
     return false;
   }
-  formMessage("All fields are required!");
+  form.errorMessage("All fields are required!");
   return false;
 };
+
+/* This method controls all the process to edit a task. first check the task validation
+once the validation is correct, it calls the method to edit a task to the local storage,
+then it calls the method to create a new task item for the list to be added to the taskList,
+then it calls the method to update the project detail view to display the edited task. */
+
+const editTaskController = (
+  editTaskTitle,
+  editTaskDescription,
+  editTaskDate,
+  editTaskHour,
+  editTaskPriority,
+  index,
+  taskIndex
+) => {
+  if (
+    taskValidation(
+      editTaskTitle,
+      editTaskDescription,
+      editTaskDate,
+      editTaskHour,
+      editTaskPriority
+    )
+  ) {
+    editTask(
+      editTaskTitle,
+      editTaskDescription,
+      editTaskDate,
+      editTaskHour,
+      editTaskPriority,
+      index,
+      taskIndex
+    );
+    const taskListItem = createTaskitem(
+      editTaskTitle,
+      editTaskDescription,
+      editTaskDate,
+      editTaskHour,
+      editTaskPriority
+    );
+    updateProjectsDetail(taskListItem, taskIndex);
+    remove.window();
+  }
+};
+
+/* Method to add listener to the edit task option, this listener calls the 
+editTaskControllerin irder to start all edition process for a task */
 
 const editTaskFormListeners = (index, taskIndex) => {
   document.querySelector(".editTaskButton").addEventListener("click", () => {
@@ -150,33 +196,15 @@ const editTaskFormListeners = (index, taskIndex) => {
     const editTaskDate = document.querySelector("#date").value;
     const editTaskHour = document.querySelector("#time").value;
     const editTaskPriority = document.querySelector("#priority").value;
-    if (
-      taskValidation(
-        editTaskTitle,
-        editTaskDescription,
-        editTaskDate,
-        editTaskHour,
-        editTaskPriority
-      )
-    ) {
-      editTask(
-        editTaskTitle,
-        editTaskDescription,
-        editTaskDate,
-        editTaskHour,
-        editTaskPriority,
-        index,
-        taskIndex
-      );
-      const taskListItem = createTaskitem(
-        editTaskTitle,
-        editTaskDescription,
-        editTaskDate,
-        editTaskHour,
-        editTaskPriority
-      );
-      updateProjectsDetail(taskListItem, taskIndex);
-    }
+    editTaskController(
+      editTaskTitle,
+      editTaskDescription,
+      editTaskDate,
+      editTaskHour,
+      editTaskPriority,
+      index,
+      taskIndex
+    );
   });
 };
 
@@ -262,17 +290,26 @@ const editTaskForm = (index, taskIndex) => {
   );
 };
 
-const editRemoveTaskListeners = (taskListItem, index, task, taskIndex) => {
+// Method to add a listener to call an edition form to be able to edit a task
+
+const editTaskListener = (taskListItem, index, taskIndex) => {
   taskListItem.children[5].addEventListener("click", () => {
     editTaskForm(index, taskIndex);
     editTaskFormListeners(index, taskIndex);
   });
+};
+
+// Method to add a listener to delete a task form local storage
+
+const removeTaskListener = (taskListItem, index, taskIndex) => {
   taskListItem.children[6].addEventListener("click", () => {
     taskListItem.parentNode.removeChild(taskListItem);
     projects.current[index].tasks.splice(taskIndex, 1);
     storage.save(projects.current);
   });
 };
+
+// Method to add a new task to the local storage
 
 const addNewTask = (
   newTaskTitle,
@@ -290,8 +327,61 @@ const addNewTask = (
     taskPriority: newTaskPriority,
   });
   storage.save(projects.current);
-  remove.window();
 };
+
+/* This method controls all the process of creating a new task. first check the task validation
+once the validation is correct, it calls the method to add a new task to the local storage,
+then it calls the method to create a new task item for the list to be added to the taskList,
+then it calls the method to update the project detail view to display the new task, then,
+it calls the method to add listeners (edit and remove) to the new task added and finally it 
+removes the form window
+*/
+
+const newTaskController = (
+  newTaskTitle,
+  newTaskDescription,
+  newTaskDate,
+  newTaskHour,
+  newTaskPriority,
+  index
+) => {
+  if (
+    taskValidation(
+      newTaskTitle,
+      newTaskDescription,
+      newTaskDate,
+      newTaskHour,
+      newTaskPriority
+    )
+  ) {
+    addNewTask(
+      newTaskTitle,
+      newTaskDescription,
+      newTaskDate,
+      newTaskHour,
+      newTaskPriority,
+      index
+    );
+    const taskListItem = createTaskitem(
+      newTaskTitle,
+      newTaskDescription,
+      newTaskDate,
+      newTaskHour,
+      newTaskPriority
+    );
+    updateProjectsDetail(taskListItem);
+
+    const taskIndex = Array.from(taskListItem.parentNode.children).indexOf(
+      taskListItem
+    );
+    editTaskListener(taskListItem, index, taskIndex);
+    removeTaskListener(taskListItem, index, taskIndex);
+    remove.window();
+  }
+};
+
+/* Method to add a listener to the new task form. These listener will send the values
+ of the inputs to the newTaskController */
 
 const newTaskFormListeners = (index) => {
   document.querySelector(".addTaskButton").addEventListener("click", () => {
@@ -300,43 +390,14 @@ const newTaskFormListeners = (index) => {
     const newTaskDate = document.querySelector("#date").value;
     const newTaskHour = document.querySelector("#time").value;
     const newTaskPriority = document.querySelector("#priority").value;
-    if (
-      taskValidation(
-        newTaskTitle,
-        newTaskDescription,
-        newTaskDate,
-        newTaskHour,
-        newTaskPriority
-      )
-    ) {
-      addNewTask(
-        newTaskTitle,
-        newTaskDescription,
-        newTaskDate,
-        newTaskHour,
-        newTaskPriority,
-        index
-      );
-      const taskListItem = createTaskitem(
-        newTaskTitle,
-        newTaskDescription,
-        newTaskDate,
-        newTaskHour,
-        newTaskPriority
-      );
-      updateProjectsDetail(taskListItem);
-      const task = {
-        taskTitle: newTaskTitle,
-        taskDescription: newTaskDescription,
-        taskDate: newTaskDate,
-        taskHour: newTaskHour,
-        taskPriority: newTaskPriority,
-      };
-      const taskIndex = Array.from(taskListItem.parentNode.children).indexOf(
-        taskListItem
-      );
-      editRemoveTaskListeners(taskListItem, index, task, taskIndex);
-    }
+    newTaskController(
+      newTaskTitle,
+      newTaskDescription,
+      newTaskDate,
+      newTaskHour,
+      newTaskPriority,
+      index
+    );
   });
 };
 
@@ -357,6 +418,8 @@ const newTaskButtonListener = (newTaskButton, index) => {
     newTaskForm(index);
   });
 };
+
+// Method to display details about each project
 
 const projectDetail = (project, index) => {
   remove.boards();
@@ -393,8 +456,8 @@ const projectDetail = (project, index) => {
       task.taskPriority
     );
     taskList.appendChild(taskListItem);
-
-    editRemoveTaskListeners(taskListItem, index, task, taskIndex);
+    editTaskListener(taskListItem, index, taskIndex);
+    removeTaskListener(taskListItem, index, taskIndex);
   });
   taskBoard.appendChild(taskList);
   section.appendChild(taskBoard);
@@ -474,6 +537,8 @@ title and description must be provided in order to set an edition as valid */
 const editProjectValidation = (title, description, index) => {
   if (title && description) {
     editProject(title, description, index);
+  } else {
+    form.errorMessage("All fields are required!");
   }
 };
 
@@ -633,6 +698,8 @@ const newProjectValidation = (title, description) => {
     createProject(title, description);
     remove.window();
     renderNewProject();
+  } else {
+    form.errorMessage("All fields are require!");
   }
 };
 

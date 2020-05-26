@@ -21,11 +21,34 @@ const form = (() => {
     return cancelButton;
   };
 
+  /* Method to delete an error message if the message exists, 
+  so the form will always display one message by error */
+
+  const checkErrorMessage = () => {
+    const error = document.querySelector("#message");
+    if (error) {
+      error.parentNode.removeChild(error);
+    }
+  };
+
+  // Method to display an error message in the form when some validation fails
+
+  const errorMessage = (messageText) => {
+    checkErrorMessage();
+    const message = document.createElement("p");
+    message.setAttribute("id", "message");
+    const formBox = document.querySelector(".new-box");
+    message.innerText = `${messageText}`;
+    message.style.display = "block";
+    formBox.insertBefore(message, document.querySelector("#submit"));
+  };
+
   // Method to create the submit form button
 
   const button = (buttonText, buttonClass) => {
     const button = document.createElement("input");
     button.setAttribute("type", "button");
+    button.setAttribute("id", "submit");
     button.classList.add(`${buttonClass}`);
     button.setAttribute("value", `${buttonText}`);
     return button;
@@ -165,6 +188,7 @@ const form = (() => {
     hourField,
     priorityField,
     button,
+    errorMessage,
     cancel,
   };
 })();
