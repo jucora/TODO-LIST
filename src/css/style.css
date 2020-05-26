@@ -236,7 +236,7 @@ select {
 }
 .newProjectButton,
 .editProjectButton,
-.taskButton,
+.addTaskButton,
 .editTaskButton,
 .cancelButton {
   width: 100%;
