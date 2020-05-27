@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { getHours, getMinutes } from 'date-fns';
 import storage from './storage';
 import remove from './closeRemove';
