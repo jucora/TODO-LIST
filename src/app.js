@@ -1,5 +1,5 @@
 import './css/style.css';
-
+// eslint-disable-next-line import/no-unresolved
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
