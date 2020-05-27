@@ -12,6 +12,10 @@ The application contains a date validation so that the user can only create even
 
 This project belongs to the Microverse curriculum in the Javascript section.
 
+## :earth_americas: Live Version here:
+
+
+
 ## :heavy_check_mark: Odin Projet Link
 
 [TODO LIST Project](https://www.theodinproject.com/courses/javascript/lessons/todo-list)
@@ -24,6 +28,15 @@ This project belongs to the Microverse curriculum in the Javascript section.
 - User can create tasks for a project
 - User can edit tasks for a project
 - User can remove tasks for a project
+
+## :arrow_right: Instructions to use the TODO-LIST locally
+
+- You can clone the repo by running the next command in your command line: 
+  <p><code>git clone https://github.com/jucora/TODO-LIST.git</code></p>
+
+- Next, follow the route: TODO-LIST/dist
+
+- You'll find the index.html file, open it and you're good to go!
 
 ## :computer: Languages and Tools
 
