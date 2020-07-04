@@ -4,6 +4,8 @@
   <img src="src/images/cover.png">
 </p>
 
+# :globe_with_meridians: [Live Version](https://raw.githack.com/jucora/TODO-LIST/master/dist/index.html):point_left:
+
 ## :pencil: Description
 
 This project consists of creating a task application. The user can create or delete projects, and in turn create tasks that belong to a specific project.
