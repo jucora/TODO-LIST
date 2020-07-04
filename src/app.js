@@ -1,11 +1,11 @@
-// eslint-disable-next-line import/no-unresolved
-import '@fortawesome/fontawesome-free/js/fontawesome';
-// eslint-disable-next-line import/no-unresolved
-import '@fortawesome/fontawesome-free/js/solid';
-// eslint-disable-next-line import/no-unresolved
-import '@fortawesome/fontawesome-free/js/regular';
-// eslint-disable-next-line import/no-unresolved
-import '@fortawesome/fontawesome-free/js/brands';
+// eslint-disable-next-line
+import "@fortawesome/fontawesome-free/js/fontawesome.js";
+// eslint-disable-next-line
+import "@fortawesome/fontawesome-free/js/solid.js";
+// eslint-disable-next-line
+import "@fortawesome/fontawesome-free/js/regular.js";
+// eslint-disable-next-line
+import "@fortawesome/fontawesome-free/js/brands.js";
 
 import './css/style.css';
 import storage from './js/storage';
