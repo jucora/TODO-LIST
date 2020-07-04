@@ -1,4 +1,3 @@
-import './css/style.css';
 // eslint-disable-next-line import/no-unresolved
 import '@fortawesome/fontawesome-free/js/fontawesome';
 // eslint-disable-next-line import/no-unresolved
@@ -8,6 +7,7 @@ import '@fortawesome/fontawesome-free/js/regular';
 // eslint-disable-next-line import/no-unresolved
 import '@fortawesome/fontawesome-free/js/brands';
 
+import './css/style.css';
 import storage from './js/storage';
 import {
   projects,
