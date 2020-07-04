@@ -115,10 +115,15 @@ const taskValidation = (
   taskPriority,
 ) => {
   if (taskTitle && taskDescription && taskDate && taskHour && taskPriority) {
-    const today = new Date();
-    const selectedDay = new Date(taskDate.replace(/-/g, '/'));
-    if (selectedDay.getDate() >= today.getDate()) {
-      if (selectedDay.getDate() === today.getDate()) {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const selectedDay = new Date(taskDate.replace(/-/g, '/')).setHours(
+      0,
+      0,
+      0,
+      0,
+    );
+    if (selectedDay.valueOf() >= today.valueOf()) {
+      if (selectedDay.valueOf() === today.valueOf()) {
         const onlyTaskHour = parseInt(taskHour.split(':')[0], 10);
         const onlyTaskMinutes = parseInt(taskHour.split(':')[1], 10);
         if (onlyTaskHour > getHours(new Date())) {
@@ -132,7 +137,11 @@ const taskValidation = (
             form.errorMessage("The task can't be in the current time!");
             return false;
           }
+          form.errorMessage('Minutes can´t be less than current minutes!');
+          return false;
         }
+        form.errorMessage('hour can´t be less than current hour!');
+        return false;
       }
       return true;
     }
@@ -300,6 +309,10 @@ const editTaskListener = (taskListItem, index, taskIndex) => {
   });
 };
 
+// Project factory function
+
+const project = (title, description) => ({ title, description, tasks: [] });
+
 // Method to add a listener to delete a task form local storage
 
 const removeTaskListener = (taskListItem, index, taskIndex) => {
@@ -307,7 +320,52 @@ const removeTaskListener = (taskListItem, index, taskIndex) => {
     taskListItem.parentNode.removeChild(taskListItem);
     projects.current[index].tasks.splice(taskIndex, 1);
     storage.save(projects.current);
+    // eslint-disable-next-line no-use-before-define
+    projectDetail(projects.current[index], index);
   });
+};
+
+const printTasks = (index, taskList) => {
+  projects.current[index].tasks.forEach((task, taskIndex) => {
+    const taskListItem = createTaskitem(
+      task.taskTitle,
+      task.taskDescription,
+      task.taskDate,
+      task.taskHour,
+      task.taskPriority,
+    );
+    taskList.appendChild(taskListItem);
+    editTaskListener(taskListItem, index, taskIndex);
+    removeTaskListener(taskListItem, index, taskIndex);
+  });
+};
+
+const createTaskList = () => {
+  const taskList = document.createElement('ul');
+  taskList.setAttribute('id', 'taskList');
+  return taskList;
+};
+
+const createTaskBoard = () => {
+  const checkTaskBoard = document.querySelector('.taskBoard');
+  if (checkTaskBoard) {
+    checkTaskBoard.parentNode.removeChild(checkTaskBoard);
+  }
+  const taskBoard = document.createElement('div');
+  taskBoard.classList.add('taskBoard');
+  const taskBoardTitle = document.createElement('h2');
+  taskBoardTitle.innerText = 'Tasks';
+  taskBoard.appendChild(taskBoardTitle);
+  return taskBoard;
+};
+
+const taskBoardController = (index) => {
+  const taskBoard = createTaskBoard();
+  const taskList = createTaskList();
+  printTasks(index, taskList);
+  taskBoard.appendChild(taskList);
+  const section = document.querySelector('section');
+  section.appendChild(taskBoard);
 };
 
 // Method to add a new task to the local storage
@@ -438,30 +496,7 @@ const projectDetail = (project, index) => {
   newTaskButton.innerText = 'Add New Task';
   projectDetail.appendChild(newTaskButton);
   section.appendChild(projectDetail);
-
-  /* Task Board */
-  const taskBoard = document.createElement('div');
-  taskBoard.classList.add('taskBoard');
-  const taskBoardTitle = document.createElement('h2');
-  taskBoardTitle.innerText = 'Tasks';
-  taskBoard.appendChild(taskBoardTitle);
-  const taskList = document.createElement('ul');
-  taskList.setAttribute('id', 'taskList');
-
-  projects.current[index].tasks.forEach((task, taskIndex) => {
-    const taskListItem = createTaskitem(
-      task.taskTitle,
-      task.taskDescription,
-      task.taskDate,
-      task.taskHour,
-      task.taskPriority,
-    );
-    taskList.appendChild(taskListItem);
-    editTaskListener(taskListItem, index, taskIndex);
-    removeTaskListener(taskListItem, index, taskIndex);
-  });
-  taskBoard.appendChild(taskList);
-  section.appendChild(taskBoard);
+  taskBoardController(index);
   newTaskButtonListener(newTaskButton, index);
 };
 
@@ -609,7 +644,6 @@ const removeProjectListener = (index, projectOptions, item) => {
     removeListItem(item);
     removeProjectFromStorage(index);
     window.location.reload();
-    remove.boards();
   });
 };
 
@@ -678,10 +712,6 @@ const renderNewProject = () => {
   editProjectListener(projectOptions, index);
   removeProjectListener(index, projectOptions, item);
 };
-
-// Project factory function
-
-const project = (title, description) => ({ title, description, tasks: [] });
 
 // Method to create a new project in localstorage
 
