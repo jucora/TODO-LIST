@@ -8,15 +8,11 @@
 
 ## :pencil: Description
 
-This project consists of creating a task application. The user can create or delete projects, and in turn create tasks that belong to a specific project.
+This project consists of creating a task application. The user can create or delete projects, and in turn, create tasks that belong to a specific project.
 
 The application contains a date validation so that the user can only create events that do not have past dates.
 
 This project belongs to the Microverse curriculum in the Javascript section.
-
-## :earth_americas: Live Version here:
-
-
 
 ## :heavy_check_mark: Odin Projet Link
 
